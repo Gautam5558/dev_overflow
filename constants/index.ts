@@ -36,3 +36,23 @@ export const sideBarContent = [
     path: "/ask-question",
   },
 ];
+
+export const topQuestions = [
+  {
+    id: 1,
+    title:
+      "Best practices for data fetching in a Next.js application with Server-Side Rendering (SSR)??",
+  },
+  { id: 2, title: "How to get started writing a machine learning algo?" },
+  { id: 3, title: "Can i get this course for free?" },
+  { id: 4, title: "Redux Toolkit Updating State as Expected?" },
+  { id: 5, title: "Best practices for efficiency and performance in AI?" },
+];
+
+export const tags = [
+  { id: 1, tagName: "Nextjs", count: 23 },
+  { id: 2, tagName: "Gemini", count: 15 },
+  { id: 3, tagName: "Open AI", count: 11 },
+  { id: 4, tagName: "Javascript", count: 8 },
+  { id: 5, tagName: "c++", count: 5 },
+];
