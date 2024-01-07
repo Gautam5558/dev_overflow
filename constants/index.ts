@@ -56,3 +56,77 @@ export const tags = [
   { id: 4, tagName: "Javascript", count: 8 },
   { id: 5, tagName: "c++", count: 5 },
 ];
+
+export const filters = [
+  { id: 1, tagName: "newest", count: 23 },
+  { id: 2, tagName: "frequent", count: 15 },
+  { id: 3, tagName: "Unanswered", count: 11 },
+  { id: 4, tagName: "recent", count: 8 },
+];
+
+export const questions = [
+  {
+    _id: 1,
+    title: "Cascading Deletes in SQLAlchemy",
+    tags: [
+      { _id: 1, name: "python" },
+      { _id: 2, name: "sql" },
+    ],
+    author: {
+      name: "John Doe",
+      img: "/assets/images/testimg.png",
+    },
+    upvotes: 10,
+    views: 245,
+    answers: 2,
+    createdAt: new Date(),
+  },
+  {
+    _id: 2,
+    title: "Cascading Deletes in SQLAlchemy",
+    tags: [
+      { _id: 1, name: "python" },
+      { _id: 2, name: "sql" },
+    ],
+    author: {
+      name: "John Doe",
+      img: "/assets/images/testimg.png",
+    },
+    upvotes: 10,
+    views: 245,
+    answers: 2,
+    createdAt: new Date(),
+  },
+  {
+    _id: 3,
+    title: "Cascading Deletes in SQLAlchemy",
+    tags: [
+      { _id: 1, name: "python" },
+      { _id: 2, name: "sql" },
+    ],
+    author: {
+      name: "John Doe",
+      img: "/assets/images/testimg.png",
+    },
+    upvotes: 10,
+    views: 245,
+    answers: 2,
+    createdAt: new Date(),
+  },
+  {
+    _id: 4,
+    title: "Cascading Deletes in SQLAlchemy",
+    tags: [
+      { _id: 1, name: "python" },
+      { _id: 2, name: "sql" },
+    ],
+    author: {
+      name: "John Doe",
+      img: "/assets/images/testimg.png",
+    },
+    upvotes: 10,
+    views: 245,
+    answers: 2,
+    createdAt: new Date(),
+  },
+];

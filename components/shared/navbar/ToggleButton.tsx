@@ -50,8 +50,8 @@ const ToggleButton = () => {
           />
         </MenubarTrigger>
         <MenubarContent
-          className="absolute right-[-1rem] mt-3 min-w-[120px] rounded border py-2
-        dark:border-dark-400 dark:bg-dark-300"
+          className="absolute right-[-1rem] mt-3 min-w-[120px] rounded border bg-light-900
+        py-2 dark:border-dark-400 dark:bg-dark-300"
         >
           {dropdownContent.map((item) => {
             return (
