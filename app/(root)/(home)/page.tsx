@@ -17,7 +17,7 @@ import NoResult from "@/components/shared/NoResult";
 const Home = () => {
   return (
     <section>
-      <div className="top">
+      <div className="">
         <div className="flex items-center justify-between">
           <h2 className="text-dark100_light900 h1-bold">All Questions</h2>
           <Link href="/ask-question">
@@ -26,8 +26,8 @@ const Home = () => {
             </Button>
           </Link>
         </div>
-        <div className="search mt-[30px] flex flex-col gap-[30px] max-md:flex-row max-md:items-center max-md:justify-between">
-          <div className="dark:dark-gradient gap=4 flex min-h-[56px] rounded-[10px]  bg-light-800 p-4">
+        <div className=" mt-[30px] flex flex-col gap-[30px] max-md:flex-row max-md:items-center max-md:justify-between">
+          <div className="dark:dark-gradient flex min-h-[56px] gap-4 rounded-[10px]  bg-light-800 p-4">
             <Image
               src="assets/icons/search.svg"
               width={24}
@@ -77,7 +77,7 @@ const Home = () => {
       <div
         className={
           questions.length > 0
-            ? "bottom mt-10 flex flex-col gap-6"
+            ? "mt-10 flex flex-col gap-6"
             : "flex items-center justify-center"
         }
       >
