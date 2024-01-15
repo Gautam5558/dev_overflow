@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Editor } from "@tinymce/tinymce-react";
 import Image from "next/image";
 import { createQuestion } from "@/lib/actions/question.action";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const Question = ({ userId }: { userId: any }) => {
   const form = useForm<z.infer<typeof questionSchema>>({
@@ -32,6 +32,7 @@ const Question = ({ userId }: { userId: any }) => {
   const editorRef = useRef(null);
   const navigate = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
+  const path = usePathname();
   async function onSubmit(values: z.infer<typeof questionSchema>) {
     setLoading(true);
     await createQuestion({
@@ -39,6 +40,7 @@ const Question = ({ userId }: { userId: any }) => {
       content: values.explanation,
       tags: values.tags,
       author: userId,
+      path,
     });
     setLoading(false);
     navigate.push("/");

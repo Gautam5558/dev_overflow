@@ -5,36 +5,40 @@ import TimeAgo from "javascript-time-ago";
 // English.
 import en from "javascript-time-ago/locale/en";
 import Link from "next/link";
+
 TimeAgo.addDefaultLocale(en);
 
-interface Props {
-  _id: number;
+export interface Props {
+  _id: string;
   title: string;
-  tags: { _id: number; name: string }[];
-  author: { name: string; img: string };
-  upvotes: number;
+  content: string;
+  tags: string[];
+  author: string;
+  upvotes: string[];
+  downvotes: string[];
   views: number;
-  answers: number;
   createdAt: Date;
 }
 
-const QuestionCard = (props: Props) => {
+const QuestionCard = async (props: any) => {
   const timeAgo = new TimeAgo("en-US");
 
   return (
-    <Link href={"/questions/" + props._id}>
+    <Link href={"/questions/" + props.question._id}>
       <div
         className="dark:dark-gradient shadow-light100_dark100 flex flex-col gap-3.5 rounded-[10px]
     border bg-light-900 px-11 py-9"
       >
         <div>
           <span className="small-regular capitalize sm:hidden">
-            . {timeAgo.format(props.createdAt)}
+            . {timeAgo.format(props.question.createdAt)}
           </span>
-          <h3 className="base-semibold text-dark200_light900">{props.title}</h3>
+          <h3 className="base-semibold text-dark200_light900">
+            {props.question.title}
+          </h3>
         </div>
         <div className="flex gap-1">
-          {props.tags.map((tag) => {
+          {props.question.tags.map((tag: any) => {
             return (
               <span
                 key={tag._id}
@@ -48,16 +52,16 @@ const QuestionCard = (props: Props) => {
         <div className="mt-2.5 flex items-center justify-between max-xl:flex-col max-xl:items-start max-xl:gap-3 max-lg:flex-row max-lg:justify-between max-md:flex-col max-md:items-start max-md:gap-3">
           <div className="flex flex-1 items-center gap-1">
             <Image
-              src={props.author.img}
+              src={props.question.author[0].picture}
               alt="Author Image"
               width={16}
               height={16}
               className="rounded-[50%]"
             />
             <span className="text-dark400_light700 body-medium capitalize">
-              {props.author.name}{" "}
+              {props.question.author[0].name}
               <span className="small-regular max-sm:hidden">
-                . {timeAgo.format(props.createdAt)}
+                . {timeAgo.format(props.question.createdAt)}
               </span>
             </span>
           </div>
@@ -70,7 +74,7 @@ const QuestionCard = (props: Props) => {
                 height={16}
               />
               <span className="text-dark400_light800 small-regular">
-                {props.upvotes} votes
+                {props.question.upvotes.length} votes
               </span>
             </div>
 
@@ -82,7 +86,7 @@ const QuestionCard = (props: Props) => {
                 height={16}
               />
               <span className="text-dark400_light800 small-regular">
-                {props.answers} comments
+                10 comments
               </span>
             </div>
             <div className="flex items-center gap-1">
@@ -93,7 +97,7 @@ const QuestionCard = (props: Props) => {
                 height={16}
               />
               <span className="text-dark400_light800 small-regular">
-                {props.views} views
+                {props.question.views} views
               </span>
             </div>
           </div>

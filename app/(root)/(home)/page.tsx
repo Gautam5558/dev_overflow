@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { filters, questions } from "@/constants";
+import { filters } from "@/constants";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -11,10 +11,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import QuestionCard from "@/components/cards/QuestionCard";
+import QuestionCard, { Props } from "@/components/cards/QuestionCard";
 import NoResult from "@/components/shared/NoResult";
+import { getQuestions } from "@/lib/actions/question.action";
+// import { questionSchemaType } from "@/lib/models/question.model";
 
-const Home = () => {
+const Home = async () => {
+  const result = await getQuestions({});
+
   return (
     <section>
       <div className="">
@@ -76,14 +80,14 @@ const Home = () => {
       </div>
       <div
         className={
-          questions.length > 0
+          result.questions.length > 0
             ? "mt-10 flex flex-col gap-6"
             : "flex items-center justify-center"
         }
       >
-        {questions.length > 0 ? (
-          questions.map((question) => {
-            return <QuestionCard key={question._id} {...question} />;
+        {result.questions.length > 0 ? (
+          result.questions.map((question: Props) => {
+            return <QuestionCard key={question._id} question={question} />;
           })
         ) : (
           <NoResult />

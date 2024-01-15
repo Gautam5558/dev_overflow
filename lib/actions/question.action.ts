@@ -3,11 +3,13 @@
 import Question from "../models/question.model";
 import { connectDb } from "../connectdb";
 import Tag from "../models/tag.model";
+import User from "../models/user.model";
+import { revalidatePath } from "next/cache";
 
 export const createQuestion = async (params: any) => {
   try {
     connectDb();
-    const { title, content, tags, author } = params;
+    const { title, content, tags, author, path } = params;
     // Creating a question document
     const newQuestion = new Question({
       title,
@@ -36,6 +38,21 @@ export const createQuestion = async (params: any) => {
     });
 
     // Whenever a user creates a question add reputation by +5(ToDo)
+
+    revalidatePath(path);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const getQuestions = async (params: any) => {
+  try {
+    connectDb();
+    const questions = await Question.find()
+      .populate({ path: "tags", model: Tag })
+      .populate({ path: "author", model: User })
+      .sort({ createdAt: -1 });
+    return { questions };
   } catch (err) {
     console.log(err);
   }
