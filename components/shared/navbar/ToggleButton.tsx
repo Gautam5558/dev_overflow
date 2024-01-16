@@ -13,7 +13,7 @@ import { ThemeContext } from "@/context/ThemeProvider";
 import { dropdownContent } from "@/constants";
 
 const ToggleButton = () => {
-  const { theme, setTheme } = useContext(ThemeContext);
+  const { theme, setTheme } = useContext<any>(ThemeContext);
 
   const handleClick = (value: string) => {
     if (value === "system") {

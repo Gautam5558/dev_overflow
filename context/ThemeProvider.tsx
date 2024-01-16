@@ -2,7 +2,7 @@
 
 import React, { createContext, useEffect, useState } from "react";
 
-interface ThemeContextType {
+export interface ThemeContextType {
   theme: string;
   setTheme: (theme: string) => void;
 }
