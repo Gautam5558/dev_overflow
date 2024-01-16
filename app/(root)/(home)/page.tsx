@@ -17,7 +17,7 @@ import { getQuestions } from "@/lib/actions/question.action";
 // import { questionSchemaType } from "@/lib/models/question.model";
 
 const Home = async () => {
-  const result = await getQuestions({});
+  const result: any = await getQuestions({});
 
   return (
     <section>
