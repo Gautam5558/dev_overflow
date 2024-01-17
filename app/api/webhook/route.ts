@@ -51,6 +51,8 @@ export async function POST(req: Request) {
     });
   }
 
+  console.log(evt);
+
   // Get the ID and type
   if (evt.type === "user.created") {
     const user = await createUser({
