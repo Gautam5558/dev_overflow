@@ -60,3 +60,13 @@ export const deleteUser = async (params: any) => {
     console.log(err);
   }
 };
+
+export const getUsers = async (params: any) => {
+  try {
+    connectDb();
+    const users = await User.find();
+    return users;
+  } catch (err) {
+    console.log(err);
+  }
+};
