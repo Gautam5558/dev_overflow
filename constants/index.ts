@@ -64,6 +64,12 @@ export const filters = [
   { id: 4, tagName: "recent", count: 8 },
 ];
 
+export const userFilters = [
+  { id: 1, tagName: "new users", count: 23 },
+  { id: 2, tagName: "old users", count: 15 },
+  { id: 3, tagName: "top contributors", count: 11 },
+];
+
 export const questions = [
   {
     _id: 1,

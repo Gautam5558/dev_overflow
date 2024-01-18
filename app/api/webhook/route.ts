@@ -51,8 +51,6 @@ export async function POST(req: Request) {
     });
   }
 
-  console.log(evt);
-
   // Get the ID and type
   if (evt.type === "user.created") {
     const user = await createUser({
@@ -61,7 +59,7 @@ export async function POST(req: Request) {
       name: `${evt.data.first_name}${
         evt.data.last_name ? ` ${evt.data.last_name}` : ""
       }`,
-      email: evt.data.email_addresses[0],
+      email: evt.data.email_addresses[0].email_address,
       picture: evt.data.image_url,
     });
     return NextResponse.json({ status: "OK", user });
