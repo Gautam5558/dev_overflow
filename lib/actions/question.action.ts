@@ -57,3 +57,76 @@ export const getQuestions = async (params: any) => {
     console.log(err);
   }
 };
+
+export const getQuestion = async (params: { questionId: string }) => {
+  try {
+    connectDb();
+    const questionData = await Question.findById(params.questionId)
+      .populate({ path: "tags", model: Tag })
+      .populate({ path: "author", model: User });
+    return { questionData };
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const handleUpvote = async (params: any) => {
+  try {
+    connectDb();
+    const { userId, questionId, path } = params;
+    const question = await Question.findById(questionId);
+    const isIncludedUpvote = question.upvotes.includes(userId);
+    const isIncludedDownvote = question.downvotes.includes(userId);
+    if (isIncludedUpvote) {
+      await Question.findByIdAndUpdate(questionId, {
+        $pull: { upvotes: userId },
+      });
+    } else if (!isIncludedUpvote && isIncludedDownvote) {
+      await Question.findByIdAndUpdate(questionId, {
+        $push: { upvotes: userId },
+      });
+      await Question.findByIdAndUpdate(questionId, {
+        $pull: { downvotes: userId },
+      });
+    } else {
+      await Question.findByIdAndUpdate(questionId, {
+        $push: { upvotes: userId },
+      });
+    }
+    revalidatePath(path);
+    return { userId };
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const handleDownvote = async (params: any) => {
+  try {
+    connectDb();
+    const { userId, questionId, path } = params;
+    const question = await Question.findById(questionId);
+    const isIncludedDownvote = question.downvotes.includes(userId);
+    const isIncludedUpvote = question.upvotes.includes(userId);
+    if (isIncludedDownvote) {
+      await Question.findByIdAndUpdate(questionId, {
+        $pull: { downvotes: userId },
+      });
+    } else if (!isIncludedDownvote && isIncludedUpvote) {
+      await Question.findByIdAndUpdate(questionId, {
+        $push: { downvotes: userId },
+      });
+      await Question.findByIdAndUpdate(questionId, {
+        $pull: { upvotes: userId },
+      });
+    } else {
+      await Question.findByIdAndUpdate(questionId, {
+        $push: { downvotes: userId },
+      });
+    }
+    revalidatePath(path);
+    // We actually dont need to return anything , we are just returning for the sake of it
+    return { userId };
+  } catch (err) {
+    console.log(err);
+  }
+};

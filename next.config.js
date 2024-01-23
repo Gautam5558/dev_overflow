@@ -6,8 +6,9 @@ const nextConfig = {
     serverComponentsExternalPackages: ["mongoose"],
   },
   images: {
-    domains: ["example.com"],
+    domains: ["img.clerk.com"],
   },
+  reactStrictMode: false,
 };
 
 module.exports = nextConfig;

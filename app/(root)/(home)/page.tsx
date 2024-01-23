@@ -53,7 +53,12 @@ const Home = async () => {
             return <QuestionCard key={question._id} question={question} />;
           })
         ) : (
-          <NoResult />
+          <NoResult
+            text="questions"
+            paragraph="Be the first to break the silence! 🚀 Ask a Question and kickstart the discussion. our query could be the next big thing others learn from. Get involved! 💡"
+            buttonLink="/ask-question"
+            buttonText="Ask a Question"
+          />
         )}
       </div>
     </section>

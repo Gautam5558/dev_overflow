@@ -5,6 +5,7 @@ import TimeAgo from "javascript-time-ago";
 // English.
 import en from "javascript-time-ago/locale/en";
 import Link from "next/link";
+import { getAnswers } from "@/lib/actions/answer.action";
 
 TimeAgo.addDefaultLocale(en);
 
@@ -22,6 +23,8 @@ export interface Props {
 
 const QuestionCard = async (props: any) => {
   const timeAgo = new TimeAgo("en-US");
+
+  const answers = await getAnswers({ questionId: props.question._id });
 
   return (
     <Link href={"/questions/" + props.question._id}>
@@ -86,7 +89,7 @@ const QuestionCard = async (props: any) => {
                 height={16}
               />
               <span className="text-dark400_light800 small-regular">
-                10 comments
+                {answers?.length} comments
               </span>
             </div>
             <div className="flex items-center gap-1">

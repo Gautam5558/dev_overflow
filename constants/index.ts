@@ -18,7 +18,7 @@ export const sideBarContent = [
   {
     icon: "/assets/icons/star.svg",
     label: "Collections",
-    path: "/collection",
+    path: "/collections",
   },
   {
     icon: "/assets/icons/suitcase.svg",
@@ -68,6 +68,19 @@ export const userFilters = [
   { id: 1, tagName: "new users", count: 23 },
   { id: 2, tagName: "old users", count: 15 },
   { id: 3, tagName: "top contributors", count: 11 },
+];
+
+export const tagFilters = [
+  { id: 1, tagName: "Top tags", count: 23 },
+  { id: 2, tagName: "Oldest tags", count: 15 },
+  { id: 3, tagName: "Newest tags", count: 11 },
+];
+
+export const answerFilters = [
+  { id: 1, tagName: "Highest upvotes", count: 23 },
+  { id: 2, tagName: "Newest", count: 15 },
+  { id: 3, tagName: "Oldest", count: 11 },
+  { id: 4, tagName: "Lowest Upvotes", count: 19 },
 ];
 
 export const questions = [
