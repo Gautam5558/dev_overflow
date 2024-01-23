@@ -19,13 +19,21 @@ const Community = async () => {
           <LocalSearchBar placeholder={"Search by username..."} />
           <Filter options={userFilters} display="fullscreen" />
         </div>
-        {users?.length === 0 ? (
-          <NoResult />
-        ) : (
-          users?.map((user) => {
-            return <UserCard key={user._id} user={user} />;
-          })
-        )}
+        <div className="mt-12 flex flex-wrap gap-4">
+          {users?.length === 0 ? (
+            <NoResult
+              text="users"
+              paragraph="Be the first to signup! 🚀 Signup and kickstart the
+          ask a question 💡"
+              buttonLink="/signup"
+              buttonText="Signup"
+            />
+          ) : (
+            users?.map((user) => {
+              return <UserCard key={user._id} user={user} />;
+            })
+          )}
+        </div>
       </div>
     </section>
   );

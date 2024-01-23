@@ -3,6 +3,8 @@
 import { connectDb } from "../connectdb";
 import User from "../models/user.model";
 import Question from "../models/question.model";
+import { revalidatePath } from "next/cache";
+import Tag from "../models/tag.model";
 
 export const getUser = async (params: any) => {
   try {
@@ -20,6 +22,7 @@ export const createUser = async (params: any) => {
     connectDb();
     const newUser = new User({ ...params });
     await newUser.save();
+    revalidatePath("/community");
     return newUser;
   } catch (err) {
     console.log(err);
@@ -66,6 +69,41 @@ export const getUsers = async (params: any) => {
     connectDb();
     const users = await User.find();
     return users;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const savingQuestionHandle = async (params: any) => {
+  try {
+    connectDb();
+    const { userId, questionId, path } = params;
+    const user = await User.findById(userId);
+    const isSaved = user.saved.includes(questionId);
+    if (isSaved) {
+      await User.findByIdAndUpdate(userId, { $pull: { saved: questionId } });
+    } else {
+      await User.findByIdAndUpdate(userId, { $push: { saved: questionId } });
+    }
+    revalidatePath(path);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const getSavedQuestions = async (params: any) => {
+  try {
+    connectDb();
+    const user = await User.findOne({ clerkId: params.clerkId });
+    const questionIds = user.saved;
+    const questions = [];
+    for (let i = 0; i < questionIds.length; i++) {
+      const question = await Question.findById(questionIds[i])
+        .populate({ path: "tags", model: Tag })
+        .populate({ path: "author", model: User });
+      questions.push(question);
+    }
+    return { questions };
   } catch (err) {
     console.log(err);
   }

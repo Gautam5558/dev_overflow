@@ -12,3 +12,7 @@ export const questionSchema = z.object({
   explanation: z.string().min(10),
   tags: z.array(z.string().min(1).max(10)).min(1).max(3),
 });
+
+export const answerSchema = z.object({
+  solution: z.string().min(5).max(2000),
+});
