@@ -13,7 +13,7 @@ const AskQuestion = async () => {
       <h2 className="text-dark100_light900 h1-bold mb-9">
         Ask a public question
       </h2>
-      <Question userId={user?._id} />
+      <Question userId={user?._id.toString()} />
     </div>
   );
 };

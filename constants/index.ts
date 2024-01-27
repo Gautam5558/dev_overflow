@@ -31,6 +31,11 @@ export const sideBarContent = [
     path: "/tags",
   },
   {
+    icon: "/assets/icons/user.svg",
+    label: "Profile",
+    path: "/profile",
+  },
+  {
     icon: "/assets/icons/question.svg",
     label: "Ask a question",
     path: "/ask-question",

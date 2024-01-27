@@ -6,7 +6,7 @@ const LocalSearchBar = ({ placeholder }: { placeholder: string }) => {
   return (
     <div className="dark:dark-gradient flex min-h-[56px] gap-4 rounded-[10px]  bg-light-800 p-4">
       <Image
-        src="assets/icons/search.svg"
+        src="/assets/icons/search.svg"
         width={24}
         height={24}
         alt="search"
