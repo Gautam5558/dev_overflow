@@ -17,16 +17,31 @@ import {
 import { Input } from "@/components/ui/input";
 import { Editor } from "@tinymce/tinymce-react";
 import Image from "next/image";
-import { createQuestion } from "@/lib/actions/question.action";
+import { createQuestion, updateQuestion } from "@/lib/actions/question.action";
 import { usePathname, useRouter } from "next/navigation";
+// import parse from "html-react-parser";
 
-const Question = ({ userId }: { userId: any }) => {
+const Question = ({
+  userId,
+  questionData,
+}: {
+  userId: any;
+  questionData?: any;
+}) => {
+  const questionDataTags = [];
+  if (questionData) {
+    for (let i = 0; i < questionData.tags.length; i++) {
+      const tagName = questionData.tags[i].name;
+      questionDataTags.push(tagName);
+    }
+  }
+
   const form = useForm<z.infer<typeof questionSchema>>({
     resolver: zodResolver(questionSchema),
     defaultValues: {
-      title: "",
-      explanation: "",
-      tags: [],
+      title: questionData ? questionData.title : "",
+      explanation: questionData ? questionData.content : "",
+      tags: questionData ? questionDataTags : [],
     },
   });
   const editorRef = useRef(null);
@@ -34,16 +49,29 @@ const Question = ({ userId }: { userId: any }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const path = usePathname();
   async function onSubmit(values: z.infer<typeof questionSchema>) {
-    setLoading(true);
-    await createQuestion({
-      title: values.title,
-      content: values.explanation,
-      tags: values.tags,
-      author: userId,
-      path,
-    });
-    setLoading(false);
-    navigate.push("/");
+    if (questionData) {
+      setLoading(true);
+      await updateQuestion({
+        title: values.title,
+        content: values.explanation,
+        tags: values.tags,
+        path,
+        questionId: questionData._id,
+      });
+      setLoading(false);
+      navigate.push("/");
+    } else {
+      setLoading(true);
+      await createQuestion({
+        title: values.title,
+        content: values.explanation,
+        tags: values.tags,
+        author: userId,
+        path,
+      });
+      setLoading(false);
+      navigate.push("/");
+    }
   }
 
   const addTag = (e: React.KeyboardEvent<HTMLInputElement>, field: any) => {
@@ -99,6 +127,7 @@ const Question = ({ userId }: { userId: any }) => {
                 </FormLabel>
                 <FormControl>
                   <Input
+                    value={form.getValues("title")}
                     placeholder=""
                     className="background-light700_dark300 no-focus light-border-2 text-dark300_light700 px-6 py-4 "
                     onChange={(e) => {
@@ -128,7 +157,11 @@ const Question = ({ userId }: { userId: any }) => {
                     apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
                     // @ts-ignore
                     onInit={(evt, editor) => (editorRef.current = editor)}
-                    initialValue="<p>This is the initial content of the editor.</p>"
+                    initialValue={
+                      questionData
+                        ? form.getValues("explanation")
+                        : "<p>This is the initial content of the editor.</p>"
+                    }
                     onEditorChange={(value, editor) => {
                       form.setValue("explanation", value);
                     }}
@@ -227,7 +260,13 @@ const Question = ({ userId }: { userId: any }) => {
             className="primary-gradient paragraph-medium self-end px-4 py-3 text-light-900 disabled:cursor-not-allowed"
             disabled={loading}
           >
-            Ask a question
+            {questionData
+              ? loading === true
+                ? "Editing..."
+                : "Edit question"
+              : loading === true
+                ? "Creating..."
+                : "Ask a question"}
           </Button>
         </form>
       </Form>

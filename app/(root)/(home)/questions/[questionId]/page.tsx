@@ -101,12 +101,13 @@ const QuestionDetail = async ({ params }: any) => {
       <div className="flex gap-2">
         {questionData.tags.map((tag: any) => {
           return (
-            <div
+            <Link
+              href={"/tags/" + tag._id}
               key={tag._id}
               className="text-dark300_light900 background-light800_dark400 subtle-medium rounded-[4px]  px-5 py-2"
             >
               {tag.name}
-            </div>
+            </Link>
           );
         })}
       </div>

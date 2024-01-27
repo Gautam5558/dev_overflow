@@ -98,3 +98,27 @@ export const handleAnswerDownvote = async (params: any) => {
     console.log(err);
   }
 };
+
+export const getUserAnswers = async (params: any) => {
+  try {
+    connectDb();
+    const { userId } = params;
+    const answers = await Answer.find({ author: userId }).sort({
+      upvotes: -1,
+      createdAt: -1,
+    });
+    return { answers };
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const deleteAnswer = async (params: any) => {
+  try {
+    connectDb();
+    await Answer.findByIdAndDelete(params.answerId);
+    revalidatePath(params.path);
+  } catch (err) {
+    console.log(err);
+  }
+};

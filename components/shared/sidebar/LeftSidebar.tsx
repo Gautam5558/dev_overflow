@@ -7,7 +7,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 
-const LeftSidebar = () => {
+const LeftSidebar = ({ userId }: { userId: string | null }) => {
   const pathname = usePathname();
   return (
     <div className="custom-scrollbar background-light900_dark200 light-border sticky left-0 top-0 flex h-screen w-fit flex-col justify-between gap-4  overflow-y-auto border-r p-6 pt-36 shadow-light-300 max-sm:hidden lg:w-[266px] dark:shadow-none">
@@ -16,6 +16,11 @@ const LeftSidebar = () => {
           const isActive =
             (pathname.includes(item.path) && item.path.length > 1) ||
             pathname === item.path;
+          if (userId) {
+            if (item.path === "/profile") {
+              item.path = "/profile/" + userId;
+            }
+          }
           return (
             <Link
               href={item.path}

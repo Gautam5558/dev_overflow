@@ -5,6 +5,7 @@ import User from "../models/user.model";
 import Question from "../models/question.model";
 import { revalidatePath } from "next/cache";
 import Tag from "../models/tag.model";
+import Answer from "../models/answer.model";
 
 export const getUser = async (params: any) => {
   try {
@@ -104,6 +105,36 @@ export const getSavedQuestions = async (params: any) => {
       questions.push(question);
     }
     return { questions };
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const getUserInfo = async (params: any) => {
+  try {
+    connectDb();
+    const { userId } = params;
+    const user = await User.findOne({ clerkId: userId });
+
+    const totalQuestions = await Question.countDocuments({
+      author: [user._id],
+    });
+    const totalAnswers = await Answer.countDocuments({ author: user._id });
+    return { user, totalAnswers, totalQuestions };
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const updateUserEdit = async (params: any) => {
+  try {
+    connectDb();
+    const { userId, name, username, portfolioWebsite, bio, location, path } =
+      params;
+    await User.findByIdAndUpdate(userId, {
+      $set: { name, username, location, portfolioWebsite, bio },
+    });
+    revalidatePath(path);
   } catch (err) {
     console.log(err);
   }
