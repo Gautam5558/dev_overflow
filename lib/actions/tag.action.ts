@@ -1,5 +1,6 @@
 "use server";
 
+import { FilterQuery } from "mongoose";
 import { connectDb } from "../connectdb";
 import Question from "../models/question.model";
 import Tag from "../models/tag.model";
@@ -33,7 +34,29 @@ export const getUserTags = async (params: any) => {
 export const getAllTags = async (params: any) => {
   try {
     connectDb();
-    const tags = await Tag.find();
+
+    const { search, filter } = params;
+    const query: FilterQuery<typeof Tag> = {};
+    if (search) {
+      query.$or = [{ name: { $regex: new RegExp(search, "i") } }];
+    }
+
+    let sortOptions = {};
+    switch (filter) {
+      case "top tags":
+        sortOptions = { questions: -1 };
+        break;
+      case "oldest tags":
+        sortOptions = { createdOn: 1 };
+        break;
+      case "newest tags":
+        sortOptions = { createdOn: -1 };
+        break;
+      default:
+        break;
+    }
+
+    const tags = await Tag.find(query).sort(sortOptions);
     return tags;
   } catch (err) {
     console.log(err);

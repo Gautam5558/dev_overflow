@@ -66,13 +66,21 @@ export const filters = [
   { id: 1, tagName: "newest", count: 23 },
   { id: 2, tagName: "frequent", count: 15 },
   { id: 3, tagName: "Unanswered", count: 11 },
-  { id: 4, tagName: "recent", count: 8 },
+  { id: 4, tagName: "Recommended", count: 8 },
 ];
 
 export const userFilters = [
   { id: 1, tagName: "new users", count: 23 },
   { id: 2, tagName: "old users", count: 15 },
   { id: 3, tagName: "top contributors", count: 11 },
+];
+
+export const filtersForCollections = [
+  { id: 1, tagName: "most recent", count: 23 },
+  { id: 2, tagName: "oldest", count: 15 },
+  { id: 3, tagName: "most voted", count: 11 },
+  { id: 4, tagName: "most viewed", count: 27 },
+  { id: 5, tagName: "most answered", count: 37 },
 ];
 
 export const tagFilters = [

@@ -27,11 +27,32 @@ export const createAnswer = async (params: any) => {
 export const getAnswers = async (params: any) => {
   try {
     connectDb();
-    const { questionId } = params;
-    const answers = await Answer.find({ questionId }).populate({
-      path: "author",
-      model: User,
-    });
+    const { questionId, filter } = params;
+
+    let sortOptions = {};
+    switch (filter) {
+      case "highest upvotes":
+        sortOptions = { upvotes: -1 };
+        break;
+      case "newest":
+        sortOptions = { createdAt: -1 };
+        break;
+      case "oldest":
+        sortOptions = { createdOn: 1 };
+        break;
+      case "lowest upvotes":
+        sortOptions = { createdOn: 1 };
+        break;
+      default:
+        break;
+    }
+
+    const answers = await Answer.find({ questionId })
+      .populate({
+        path: "author",
+        model: User,
+      })
+      .sort(sortOptions);
     return answers;
   } catch (err) {
     console.log(err);

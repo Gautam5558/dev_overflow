@@ -6,6 +6,7 @@ import Question from "../models/question.model";
 import { revalidatePath } from "next/cache";
 import Tag from "../models/tag.model";
 import Answer from "../models/answer.model";
+import { FilterQuery } from "mongoose";
 
 export const getUser = async (params: any) => {
   try {
@@ -68,7 +69,31 @@ export const deleteUser = async (params: any) => {
 export const getUsers = async (params: any) => {
   try {
     connectDb();
-    const users = await User.find();
+    const { search, filter } = params;
+    const query: FilterQuery<typeof User> = {};
+    if (search) {
+      query.$or = [
+        { username: { $regex: new RegExp(search, "i") } },
+        { name: { $regex: new RegExp(search, "i") } },
+      ];
+    }
+
+    let sortOptions = {};
+    switch (filter) {
+      case "new users":
+        sortOptions = { joinedAt: -1 };
+        break;
+      case "old users":
+        sortOptions = { joinedAt: 1 };
+        break;
+      case "top contributors":
+        sortOptions = { reputation: -1 };
+        break;
+      default:
+        break;
+    }
+
+    const users = await User.find(query).sort(sortOptions);
     return users;
   } catch (err) {
     console.log(err);
@@ -95,16 +120,61 @@ export const savingQuestionHandle = async (params: any) => {
 export const getSavedQuestions = async (params: any) => {
   try {
     connectDb();
-    const user = await User.findOne({ clerkId: params.clerkId });
-    const questionIds = user.saved;
-    const questions = [];
+    const { search, filter } = params;
+    const query: FilterQuery<typeof Question> = {};
+    if (search) {
+      query.$or = [
+        { title: { $regex: new RegExp(search, "i") } },
+        { content: { $regex: new RegExp(search, "i") } },
+      ];
+    }
+
+    let sortOptions = {};
+    switch (filter) {
+      case "most recent":
+        sortOptions = { createdAt: -1 };
+        break;
+      case "oldest":
+        sortOptions = { createdAt: 1 };
+        break;
+      case "most votes":
+        sortOptions = { upvotes: -1 };
+        break;
+      case "most viewed":
+        sortOptions = { views: -1 };
+        break;
+      case "most answered":
+        sortOptions = { answers: -1 };
+        break;
+      default:
+        break;
+    }
+
+    const user = await User.findOne({ clerkId: params.clerkId }).populate({
+      path: "saved",
+      model: "Question",
+      options: {
+        sort: sortOptions,
+      },
+      populate: [
+        { path: "tags", model: Tag },
+        { path: "author", model: User },
+      ],
+      match: query,
+    });
+
+    /* 2nd method to do same as above and send back array of saved questions
+       But I am using above method because i have implemented local search using filter. 
+      const questionIds = user.saved;
+     const questions = [];
     for (let i = 0; i < questionIds.length; i++) {
       const question = await Question.findById(questionIds[i])
         .populate({ path: "tags", model: Tag })
         .populate({ path: "author", model: User });
       questions.push(question);
     }
-    return { questions };
+    */
+    return user;
   } catch (err) {
     console.log(err);
   }

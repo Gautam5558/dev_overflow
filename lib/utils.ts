@@ -2,6 +2,7 @@ import * as z from "zod";
 
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import qs from "query-string";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -47,3 +48,29 @@ export const profileSchema = z.object({
   location: z.string().min(0).max(100),
   bio: z.string().min(0).max(1000),
 });
+
+export const getUrlFromQuery = (params: any) => {
+  const { existingSearchParams, key, value } = params;
+  const currentUrl = qs.parse(existingSearchParams);
+  currentUrl[key] = value;
+  return qs.stringifyUrl(
+    {
+      url: window.location.pathname,
+      query: currentUrl,
+    },
+    { skipNull: true }
+  );
+};
+
+export const removeQueryFromUrl = (params: any) => {
+  const { existingSearchParams, key } = params;
+  const currentUrl = qs.parse(existingSearchParams);
+  delete currentUrl[key];
+  return qs.stringifyUrl(
+    {
+      url: window.location.pathname,
+      query: currentUrl,
+    },
+    { skipNull: true }
+  );
+};

@@ -18,12 +18,18 @@ import Voting from "@/components/shared/Voting";
 
 TimeAgo.addDefaultLocale(en);
 
-const QuestionDetail = async ({ params }: any) => {
+const QuestionDetail = async ({
+  params,
+  searchParams,
+}: {
+  params: { questionId: string };
+  searchParams: { filter: string };
+}) => {
   const { questionId } = params;
   const { userId } = auth();
   const { questionData }: any = await getQuestion({ questionId });
 
-  const answers = await getAnswers({ questionId });
+  const answers = await getAnswers({ questionId, filter: searchParams.filter });
 
   const user = await getUser({ userId });
 
