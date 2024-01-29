@@ -6,8 +6,15 @@ import { userFilters } from "@/constants";
 import { getUsers } from "@/lib/actions/user.action";
 import React from "react";
 
-const Community = async () => {
-  const users = await getUsers({});
+const Community = async ({
+  searchParams,
+}: {
+  searchParams: { q: string; filter: string };
+}) => {
+  const users = await getUsers({
+    search: searchParams.q,
+    filter: searchParams.filter,
+  });
 
   return (
     <section>
@@ -16,7 +23,10 @@ const Community = async () => {
           <h2 className="text-dark100_light900 h1-bold">All Users</h2>
         </div>
         <div className=" mt-[30px] flex  justify-between gap-[30px] max-md:flex-row max-md:items-center max-md:justify-between">
-          <LocalSearchBar placeholder={"Search by username..."} />
+          <LocalSearchBar
+            placeholder={"Search by username..."}
+            route="/community"
+          />
           <Filter options={userFilters} display="fullscreen" />
         </div>
         <div className="mt-12 flex flex-wrap gap-4">

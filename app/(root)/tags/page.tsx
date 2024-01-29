@@ -6,8 +6,15 @@ import { tagFilters } from "@/constants";
 import { getAllTags } from "@/lib/actions/tag.action";
 import React from "react";
 
-const Tags = async () => {
-  const tags = await getAllTags({});
+const Tags = async ({
+  searchParams,
+}: {
+  searchParams: { q: string; filter: string };
+}) => {
+  const tags = await getAllTags({
+    search: searchParams.q,
+    filter: searchParams.filter,
+  });
 
   return (
     <section>
@@ -16,7 +23,7 @@ const Tags = async () => {
           <h2 className="text-dark100_light900 h1-bold">All Tags</h2>
         </div>
         <div className=" mt-[30px] flex  justify-between gap-[30px] max-md:flex-row max-md:items-center max-md:justify-between">
-          <LocalSearchBar placeholder={"Search by tags..."} />
+          <LocalSearchBar placeholder={"Search by tags..."} route="/tags" />
           <Filter options={tagFilters} display="fullscreen" />
         </div>
         <div className="mt-12 flex flex-wrap gap-4">

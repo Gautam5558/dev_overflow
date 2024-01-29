@@ -2,16 +2,24 @@ import { Button } from "@/components/ui/button";
 import { filters } from "@/constants";
 import Link from "next/link";
 import React from "react";
-import QuestionCard, { Props } from "@/components/cards/QuestionCard";
+import QuestionCard from "@/components/cards/QuestionCard";
 import NoResult from "@/components/shared/NoResult";
 import { getQuestions } from "@/lib/actions/question.action";
 import LocalSearchBar from "@/components/shared/LocalSearchBar";
 import Filter from "@/components/shared/Filter";
+import HomeFilter from "@/components/shared/HomeFilter";
 
 // import { questionSchemaType } from "@/lib/models/question.model";
 
-const Home = async () => {
-  const result: any = await getQuestions({});
+const Home = async ({
+  searchParams,
+}: {
+  searchParams: { q: string; filter: string };
+}) => {
+  const result: any = await getQuestions({
+    search: searchParams.q,
+    filter: searchParams.filter,
+  });
 
   return (
     <section>
@@ -25,19 +33,8 @@ const Home = async () => {
           </Link>
         </div>
         <div className=" mt-[30px] flex flex-col gap-[30px] max-md:flex-row max-md:items-center max-md:justify-between">
-          <LocalSearchBar placeholder={"Search questions..."} />
-          <div className="flex items-center gap-3 max-md:hidden">
-            {filters.map((tag) => {
-              return (
-                <div
-                  key={tag.id}
-                  className="background-light800_dark400 body-medium rounded-lg px-6 py-3 text-light-500 "
-                >
-                  {tag.tagName}
-                </div>
-              );
-            })}
-          </div>
+          <LocalSearchBar placeholder={"Search questions..."} route="/" />
+          <HomeFilter />
           <Filter options={filters} display="mediumscreen" />
         </div>
       </div>
@@ -49,7 +46,7 @@ const Home = async () => {
         }
       >
         {result.questions.length > 0 ? (
-          result.questions.map((question: Props) => {
+          result.questions.map((question: any) => {
             return <QuestionCard key={question._id} question={question} />;
           })
         ) : (

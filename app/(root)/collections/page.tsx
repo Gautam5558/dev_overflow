@@ -1,16 +1,24 @@
-import QuestionCard, { Props } from "@/components/cards/QuestionCard";
+import QuestionCard from "@/components/cards/QuestionCard";
 import Filter from "@/components/shared/Filter";
 import LocalSearchBar from "@/components/shared/LocalSearchBar";
 import NoResult from "@/components/shared/NoResult";
-import { filters } from "@/constants";
+import { filtersForCollections } from "@/constants";
 import { getSavedQuestions } from "@/lib/actions/user.action";
 import { auth } from "@clerk/nextjs";
 import React from "react";
 
-const Collections = async () => {
+const Collections = async ({
+  searchParams,
+}: {
+  searchParams: { q: string; filter: string };
+}) => {
   const { userId } = auth();
-  const result: any = await getSavedQuestions({ clerkId: userId });
-  const questions = result?.questions;
+  const result: any = await getSavedQuestions({
+    clerkId: userId,
+    search: searchParams.q,
+    filter: searchParams.filter,
+  });
+  const questions = result?.saved;
 
   return (
     <section>
@@ -18,21 +26,12 @@ const Collections = async () => {
         <div className="flex items-center justify-between">
           <h2 className="text-dark100_light900 h1-bold">Saved Questions</h2>
         </div>
-        <div className=" mt-[30px] flex flex-col gap-[30px] max-md:flex-row max-md:items-center max-md:justify-between">
-          <LocalSearchBar placeholder={"Search saved questions..."} />
-          <div className="flex items-center gap-3 max-md:hidden">
-            {filters.map((tag) => {
-              return (
-                <div
-                  key={tag.id}
-                  className="background-light800_dark400 body-medium rounded-lg px-6 py-3 text-light-500 "
-                >
-                  {tag.tagName}
-                </div>
-              );
-            })}
-          </div>
-          <Filter options={filters} display="mediumscreen" />
+        <div className=" mt-[30px] flex  items-center justify-between gap-[30px]">
+          <LocalSearchBar
+            placeholder={"Search saved questions..."}
+            route="/collections"
+          />
+          <Filter options={filtersForCollections} display="fullscreen" />
         </div>
       </div>
       <div
@@ -43,7 +42,7 @@ const Collections = async () => {
         }
       >
         {questions?.length > 0 ? (
-          questions?.map((question: Props) => {
+          questions?.map((question: any) => {
             return <QuestionCard key={question._id} question={question} />;
           })
         ) : (

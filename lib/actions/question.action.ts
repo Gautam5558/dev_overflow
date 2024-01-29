@@ -7,6 +7,7 @@ import User from "../models/user.model";
 import { revalidatePath } from "next/cache";
 import Answer from "../models/answer.model";
 import Interaction from "../models/interaction.model";
+import { FilterQuery } from "mongoose";
 
 export const createQuestion = async (params: any) => {
   try {
@@ -50,10 +51,37 @@ export const createQuestion = async (params: any) => {
 export const getQuestions = async (params: any) => {
   try {
     connectDb();
-    const questions = await Question.find()
+    const { search, filter } = params;
+
+    const query: FilterQuery<typeof Question> = {};
+    if (search) {
+      query.$or = [
+        { title: { $regex: new RegExp(search, "i") } },
+        { content: { $regex: new RegExp(search, "i") } },
+      ];
+    }
+
+    let sortOptions = {};
+    switch (filter) {
+      case "newest":
+        sortOptions = { createdAt: -1 };
+        break;
+      case "frequent":
+        sortOptions = { views: -1 };
+        break;
+      case "unanswered":
+        query.answers = { $size: 0 };
+        break;
+      default:
+        break;
+    }
+
+    // TODO=> Implementation of recommended filter after creating the recommendation system
+
+    const questions = await Question.find(query)
       .populate({ path: "tags", model: Tag })
       .populate({ path: "author", model: User })
-      .sort({ createdAt: -1 });
+      .sort(sortOptions);
     return { questions };
   } catch (err) {
     console.log(err);
