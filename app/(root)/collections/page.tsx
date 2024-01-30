@@ -2,6 +2,7 @@ import QuestionCard from "@/components/cards/QuestionCard";
 import Filter from "@/components/shared/Filter";
 import LocalSearchBar from "@/components/shared/LocalSearchBar";
 import NoResult from "@/components/shared/NoResult";
+import Pagination from "@/components/shared/Pagination";
 import { filtersForCollections } from "@/constants";
 import { getSavedQuestions } from "@/lib/actions/user.action";
 import { auth } from "@clerk/nextjs";
@@ -10,15 +11,16 @@ import React from "react";
 const Collections = async ({
   searchParams,
 }: {
-  searchParams: { q: string; filter: string };
+  searchParams: { q: string; filter: string; page: string };
 }) => {
   const { userId } = auth();
-  const result: any = await getSavedQuestions({
+  const { user, isNext }: any = await getSavedQuestions({
     clerkId: userId,
     search: searchParams.q,
     filter: searchParams.filter,
+    page: searchParams.page ? +searchParams.page : 1,
   });
-  const questions = result?.saved;
+  const questions = user?.saved;
 
   return (
     <section>
@@ -54,6 +56,10 @@ const Collections = async ({
           />
         )}
       </div>
+      <Pagination
+        pageNumber={searchParams.page ? +searchParams.page : 1}
+        isNext={isNext}
+      />
     </section>
   );
 };

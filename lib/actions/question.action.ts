@@ -51,7 +51,10 @@ export const createQuestion = async (params: any) => {
 export const getQuestions = async (params: any) => {
   try {
     connectDb();
-    const { search, filter } = params;
+    const { search, filter, page = 1, pageSize = 20 } = params;
+
+    // First we have to calculate total question to skip on the basis of current page nuumber
+    const numberQuestionToSkip = (page - 1) * pageSize;
 
     const query: FilterQuery<typeof Question> = {};
     if (search) {
@@ -81,8 +84,15 @@ export const getQuestions = async (params: any) => {
     const questions = await Question.find(query)
       .populate({ path: "tags", model: Tag })
       .populate({ path: "author", model: User })
+      .skip(numberQuestionToSkip)
+      .limit(pageSize)
       .sort(sortOptions);
-    return { questions };
+
+    const totalQuestions = await Question.countDocuments();
+
+    const isNext = totalQuestions > numberQuestionToSkip + questions.length;
+
+    return { questions, isNext };
   } catch (err) {
     console.log(err);
   }
@@ -165,12 +175,22 @@ export const handleDownvote = async (params: any) => {
 export const getTopQuestionsUser = async (params: any) => {
   try {
     connectDb();
-    const { userId } = params;
+    const { userId, page = 1, pageSize = 5 } = params;
+
+    const numberQuestionsToSkip = (page - 1) * pageSize;
+
     const questions = await Question.find({ author: [userId] })
       .populate({ path: "tags", model: Tag })
       .populate({ path: "author", model: User })
+      .skip(numberQuestionsToSkip)
+      .limit(pageSize)
       .sort({ views: -1, createdAt: -1 });
-    return { questions };
+
+    const myTotalQuestions = await Question.find({ author: [userId] });
+    const isNext =
+      myTotalQuestions.length > numberQuestionsToSkip + questions.length;
+
+    return { questions, isNext };
   } catch (err) {
     console.log(err);
   }

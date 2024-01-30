@@ -11,7 +11,13 @@ import Stats from "@/components/shared/Stats";
 import TopPosts from "@/components/shared/TopPosts";
 import UserAnswers from "@/components/shared/UserAnswers";
 
-const ProfileDetail = async ({ params }: any) => {
+const ProfileDetail = async ({
+  params,
+  searchParams,
+}: {
+  params: { clerkId: string };
+  searchParams: { page: string };
+}) => {
   const { clerkId } = params;
   const { userId } = auth();
   const { user, totalQuestions, totalAnswers }: any = await getUserInfo({
@@ -80,10 +86,10 @@ const ProfileDetail = async ({ params }: any) => {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="top-posts" className="mt-4">
-            <TopPosts userId={user._id} />
+            <TopPosts userId={user._id} searchParams={searchParams} />
           </TabsContent>
           <TabsContent value="answers" className="mt-4">
-            <UserAnswers userId={user._id} />
+            <UserAnswers userId={user._id} searchParams={searchParams} />
           </TabsContent>
         </Tabs>
       </div>
