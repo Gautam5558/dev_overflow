@@ -8,17 +8,19 @@ import { getQuestions } from "@/lib/actions/question.action";
 import LocalSearchBar from "@/components/shared/LocalSearchBar";
 import Filter from "@/components/shared/Filter";
 import HomeFilter from "@/components/shared/HomeFilter";
+import Pagination from "@/components/shared/Pagination";
 
 // import { questionSchemaType } from "@/lib/models/question.model";
 
 const Home = async ({
   searchParams,
 }: {
-  searchParams: { q: string; filter: string };
+  searchParams: { q: string; filter: string; page: string };
 }) => {
   const result: any = await getQuestions({
     search: searchParams.q,
     filter: searchParams.filter,
+    page: searchParams.page ? +searchParams.page : 1,
   });
 
   return (
@@ -58,6 +60,10 @@ const Home = async ({
           />
         )}
       </div>
+      <Pagination
+        pageNumber={searchParams.page ? +searchParams.page : 1}
+        isNext={result.isNext}
+      />
     </section>
   );
 };

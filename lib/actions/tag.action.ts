@@ -35,7 +35,10 @@ export const getAllTags = async (params: any) => {
   try {
     connectDb();
 
-    const { search, filter } = params;
+    const { search, filter, page = 1, pageSize = 6 } = params;
+
+    const numberTagsToSkip = (page - 1) * pageSize;
+
     const query: FilterQuery<typeof Tag> = {};
     if (search) {
       query.$or = [{ name: { $regex: new RegExp(search, "i") } }];
@@ -56,8 +59,15 @@ export const getAllTags = async (params: any) => {
         break;
     }
 
-    const tags = await Tag.find(query).sort(sortOptions);
-    return tags;
+    const tags = await Tag.find(query)
+      .skip(numberTagsToSkip)
+      .limit(pageSize)
+      .sort(sortOptions);
+
+    const totalTags = await Tag.countDocuments();
+    const isNext = totalTags > numberTagsToSkip + tags.length;
+
+    return { tags, isNext };
   } catch (err) {
     console.log(err);
   }

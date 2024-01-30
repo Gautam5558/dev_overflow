@@ -29,7 +29,9 @@ export interface Props {
 const QuestionCard = async (props: Props) => {
   const timeAgo = new TimeAgo("en-US");
 
-  const answers = await getAnswers({ questionId: props.question._id });
+  const { totalAnswers }: any = await getAnswers({
+    questionId: props.question._id,
+  });
   const { userId } = auth();
   const buttonsRenderOrNot =
     userId === props.question.author[0].clerkId &&
@@ -112,7 +114,7 @@ const QuestionCard = async (props: Props) => {
               height={16}
             />
             <span className="text-dark400_light800 small-regular">
-              {answers?.length} comments
+              {totalAnswers} comments
             </span>
           </div>
           <div className="flex items-center gap-1">

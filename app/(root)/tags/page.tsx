@@ -2,6 +2,7 @@ import TagCard from "@/components/cards/TagCard";
 import Filter from "@/components/shared/Filter";
 import LocalSearchBar from "@/components/shared/LocalSearchBar";
 import NoResult from "@/components/shared/NoResult";
+import Pagination from "@/components/shared/Pagination";
 import { tagFilters } from "@/constants";
 import { getAllTags } from "@/lib/actions/tag.action";
 import React from "react";
@@ -9,11 +10,12 @@ import React from "react";
 const Tags = async ({
   searchParams,
 }: {
-  searchParams: { q: string; filter: string };
+  searchParams: { q: string; filter: string; page: string };
 }) => {
-  const tags = await getAllTags({
+  const { tags, isNext }: any = await getAllTags({
     search: searchParams.q,
     filter: searchParams.filter,
+    page: searchParams.page ? +searchParams.page : 1,
   });
 
   return (
@@ -35,12 +37,16 @@ const Tags = async ({
               buttonText="Ask a Question"
             />
           ) : (
-            tags?.map((tag) => {
+            tags?.map((tag: any) => {
               return <TagCard key={tag._id} tag={tag} />;
             })
           )}
         </div>
       </div>
+      <Pagination
+        pageNumber={searchParams.page ? +searchParams.page : 1}
+        isNext={isNext}
+      />
     </section>
   );
 };

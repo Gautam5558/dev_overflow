@@ -69,7 +69,11 @@ export const deleteUser = async (params: any) => {
 export const getUsers = async (params: any) => {
   try {
     connectDb();
-    const { search, filter } = params;
+    const { search, filter, page = 1, pageSize = 3 } = params;
+
+    // Users to skip
+    const numberUsersToSkip = (page - 1) * pageSize;
+
     const query: FilterQuery<typeof User> = {};
     if (search) {
       query.$or = [
@@ -93,8 +97,15 @@ export const getUsers = async (params: any) => {
         break;
     }
 
-    const users = await User.find(query).sort(sortOptions);
-    return users;
+    const users = await User.find(query)
+      .skip(numberUsersToSkip)
+      .limit(pageSize)
+      .sort(sortOptions);
+
+    const totalUsers = await User.countDocuments();
+    const isNext = totalUsers > numberUsersToSkip + users.length;
+
+    return { users, isNext };
   } catch (err) {
     console.log(err);
   }
@@ -120,7 +131,11 @@ export const savingQuestionHandle = async (params: any) => {
 export const getSavedQuestions = async (params: any) => {
   try {
     connectDb();
-    const { search, filter } = params;
+    const { search, filter, page = 1, pageSize = 10 } = params;
+
+    // First we have to calculate total question to skip on the basis of current page nuumber
+    const numberQuestionToSkip = (page - 1) * pageSize;
+
     const query: FilterQuery<typeof Question> = {};
     if (search) {
       query.$or = [
@@ -155,6 +170,8 @@ export const getSavedQuestions = async (params: any) => {
       model: "Question",
       options: {
         sort: sortOptions,
+        skip: numberQuestionToSkip,
+        limit: pageSize,
       },
       populate: [
         { path: "tags", model: Tag },
@@ -174,7 +191,14 @@ export const getSavedQuestions = async (params: any) => {
       questions.push(question);
     }
     */
-    return user;
+
+    const userAgain = await User.findOne({ clerkId: params.clerkId });
+    const totalSavedQuestions = userAgain.saved.length;
+
+    const isNext =
+      totalSavedQuestions > numberQuestionToSkip + user.saved.length;
+
+    return { user, isNext };
   } catch (err) {
     console.log(err);
   }

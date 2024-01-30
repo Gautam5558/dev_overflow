@@ -27,7 +27,9 @@ export const createAnswer = async (params: any) => {
 export const getAnswers = async (params: any) => {
   try {
     connectDb();
-    const { questionId, filter } = params;
+    const { questionId, filter, page = 1, pageSize = 5 } = params;
+
+    const numberOfAnswersToSkip = (page - 1) * pageSize;
 
     let sortOptions = {};
     switch (filter) {
@@ -52,8 +54,15 @@ export const getAnswers = async (params: any) => {
         path: "author",
         model: User,
       })
+      .skip(numberOfAnswersToSkip)
+      .limit(pageSize)
       .sort(sortOptions);
-    return answers;
+
+    const myTotalAnswers = await Answer.find({ questionId });
+    const isNext =
+      myTotalAnswers.length > numberOfAnswersToSkip + answers.length;
+
+    return { answers, isNext, totalAnswers: myTotalAnswers.length };
   } catch (err) {
     console.log(err);
   }
@@ -123,12 +132,23 @@ export const handleAnswerDownvote = async (params: any) => {
 export const getUserAnswers = async (params: any) => {
   try {
     connectDb();
-    const { userId } = params;
-    const answers = await Answer.find({ author: userId }).sort({
-      upvotes: -1,
-      createdAt: -1,
-    });
-    return { answers };
+    const { userId, page = 1, pageSize = 5 } = params;
+
+    const numberOfAnswersToSkip = (page - 1) * pageSize;
+
+    const answers = await Answer.find({ author: userId })
+      .skip(numberOfAnswersToSkip)
+      .limit(pageSize)
+      .sort({
+        upvotes: -1,
+        createdAt: -1,
+      });
+
+    const myAnswersTotal = await Answer.find({ author: userId });
+    const isNext =
+      myAnswersTotal.length > numberOfAnswersToSkip + answers.length;
+
+    return { answers, isNext };
   } catch (err) {
     console.log(err);
   }

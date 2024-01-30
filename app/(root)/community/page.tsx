@@ -2,6 +2,7 @@ import UserCard from "@/components/cards/UserCard";
 import Filter from "@/components/shared/Filter";
 import LocalSearchBar from "@/components/shared/LocalSearchBar";
 import NoResult from "@/components/shared/NoResult";
+import Pagination from "@/components/shared/Pagination";
 import { userFilters } from "@/constants";
 import { getUsers } from "@/lib/actions/user.action";
 import React from "react";
@@ -9,11 +10,12 @@ import React from "react";
 const Community = async ({
   searchParams,
 }: {
-  searchParams: { q: string; filter: string };
+  searchParams: { q: string; filter: string; page: string };
 }) => {
-  const users = await getUsers({
+  const { users, isNext }: any = await getUsers({
     search: searchParams.q,
     filter: searchParams.filter,
+    page: searchParams.page ? +searchParams.page : 1,
   });
 
   return (
@@ -39,12 +41,16 @@ const Community = async ({
               buttonText="Signup"
             />
           ) : (
-            users?.map((user) => {
+            users?.map((user: any) => {
               return <UserCard key={user._id} user={user} />;
             })
           )}
         </div>
       </div>
+      <Pagination
+        pageNumber={searchParams.page ? +searchParams.page : 1}
+        isNext={isNext}
+      />
     </section>
   );
 };

@@ -15,6 +15,7 @@ import { auth } from "@clerk/nextjs";
 import AnswerCard from "@/components/cards/AnswerCard";
 import { getUser } from "@/lib/actions/user.action";
 import Voting from "@/components/shared/Voting";
+import Pagination from "@/components/shared/Pagination";
 
 TimeAgo.addDefaultLocale(en);
 
@@ -23,13 +24,17 @@ const QuestionDetail = async ({
   searchParams,
 }: {
   params: { questionId: string };
-  searchParams: { filter: string };
+  searchParams: { filter: string; page: string };
 }) => {
   const { questionId } = params;
   const { userId } = auth();
   const { questionData }: any = await getQuestion({ questionId });
 
-  const answers = await getAnswers({ questionId, filter: searchParams.filter });
+  const { answers, isNext, totalAnswers }: any = await getAnswers({
+    questionId,
+    filter: searchParams.filter,
+    page: searchParams.page ? +searchParams.page : 1,
+  });
 
   const user = await getUser({ userId });
 
@@ -119,12 +124,12 @@ const QuestionDetail = async ({
       </div>
       <div className="mb-5 mt-6 flex items-center justify-between">
         <h5 className="paragraph-medium primary-text-gradient ">
-          {answers?.length} Answers
+          {totalAnswers} Answers
         </h5>
         <Filter options={answerFilters} display="fullscreen" />
       </div>
       <div className="flex flex-col gap-6">
-        {answers?.map((answer) => {
+        {answers?.map((answer: any) => {
           return (
             <AnswerCard
               key={answer._id}
@@ -135,6 +140,10 @@ const QuestionDetail = async ({
           );
         })}
       </div>
+      <Pagination
+        pageNumber={searchParams.page ? +searchParams.page : 1}
+        isNext={isNext}
+      />
       <Answer questionId={questionId} clerkId={userId} />
     </>
   );
