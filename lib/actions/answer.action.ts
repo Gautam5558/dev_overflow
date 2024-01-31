@@ -18,6 +18,10 @@ export const createAnswer = async (params: any) => {
       questionId,
     });
     await answer.save();
+
+    // Incrementing reputation of User whose created answer  by 10
+    await User.findByIdAndUpdate(user._id, { $inc: { reputation: 10 } });
+
     revalidatePath(path);
   } catch (err) {
     console.log(err);
@@ -79,6 +83,10 @@ export const handleAnswerUpvote = async (params: any) => {
       await Answer.findByIdAndUpdate(questionId, {
         $pull: { upvotes: userId },
       });
+      await User.findByIdAndUpdate(userId, { $inc: { reputation: -2 } });
+      await User.findByIdAndUpdate(answer.author, {
+        $inc: { reputation: -10 },
+      });
     } else if (!isIncludedUpvote && isIncludedDownvote) {
       await Answer.findByIdAndUpdate(questionId, {
         $push: { upvotes: userId },
@@ -86,10 +94,14 @@ export const handleAnswerUpvote = async (params: any) => {
       await Answer.findByIdAndUpdate(questionId, {
         $pull: { downvotes: userId },
       });
+
+      await User.findByIdAndUpdate(answer.author, { $inc: { reputation: 20 } });
     } else {
       await Answer.findByIdAndUpdate(questionId, {
         $push: { upvotes: userId },
       });
+      await User.findByIdAndUpdate(userId, { $inc: { reputation: 2 } });
+      await User.findByIdAndUpdate(answer.author, { $inc: { reputation: 10 } });
     }
     revalidatePath(path);
     return { userId };
@@ -109,6 +121,8 @@ export const handleAnswerDownvote = async (params: any) => {
       await Answer.findByIdAndUpdate(questionId, {
         $pull: { downvotes: userId },
       });
+      await User.findByIdAndUpdate(userId, { $inc: { reputation: -2 } });
+      await User.findByIdAndUpdate(answer.author, { $inc: { reputation: 10 } });
     } else if (!isIncludedDownvote && isIncludedUpvote) {
       await Answer.findByIdAndUpdate(questionId, {
         $push: { downvotes: userId },
@@ -116,9 +130,16 @@ export const handleAnswerDownvote = async (params: any) => {
       await Answer.findByIdAndUpdate(questionId, {
         $pull: { upvotes: userId },
       });
+      await User.findByIdAndUpdate(answer.author, {
+        $inc: { reputation: -20 },
+      });
     } else {
       await Answer.findByIdAndUpdate(questionId, {
         $push: { downvotes: userId },
+      });
+      await User.findByIdAndUpdate(userId, { $inc: { reputation: 2 } });
+      await User.findByIdAndUpdate(answer.author, {
+        $inc: { reputation: -10 },
       });
     }
     revalidatePath(path);
@@ -157,6 +178,26 @@ export const getUserAnswers = async (params: any) => {
 export const deleteAnswer = async (params: any) => {
   try {
     connectDb();
+    // Before deleting the answer deal with removing reputation of user who created the answer and users who upvoted and downvoted the answer
+    const answer = await Answer.findById(params.answerId);
+    const totalUpvotes = answer.upvotes.length;
+    const totalDownvotes = answer.downvotes.length;
+    const userReputationToBeDecreased =
+      totalUpvotes * 10 - totalDownvotes * 10 + 10;
+    await User.findByIdAndUpdate(answer.author, {
+      $inc: { reputation: -userReputationToBeDecreased },
+    });
+    // Now deleting upvoted and downvoted users reputation
+    for (let i = 0; i < answer.upvotes.length; i++) {
+      await User.findByIdAndUpdate(answer.upvotes[i], {
+        $inc: { reputation: -2 },
+      });
+    }
+    for (let i = 0; i < answer.downvotes.length; i++) {
+      await User.findByIdAndUpdate(answer.downvotes[i], {
+        $inc: { reputation: -2 },
+      });
+    }
     await Answer.findByIdAndDelete(params.answerId);
     revalidatePath(params.path);
   } catch (err) {
