@@ -10,7 +10,7 @@ const LocalSearchBar = ({
   route,
 }: {
   placeholder: string;
-  route: string;
+  route?: string;
 }) => {
   const searchParams = useSearchParams();
   const q = searchParams.get("q");
