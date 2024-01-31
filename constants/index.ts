@@ -162,3 +162,10 @@ export const questions = [
     createdAt: new Date(),
   },
 ];
+
+export const globalFilters = [
+  { name: "Question", value: "question" },
+  { name: "Answer", value: "answer" },
+  { name: "User", value: "user" },
+  { name: "Tag", value: "tag" },
+];
