@@ -44,7 +44,10 @@ border bg-light-900 px-11 py-9"
           </Link>
           <SignedIn>
             {props.answer.author.toString() === user._id.toString() && (
-              <EditDeleteButtons answerId={props.answer._id} type="answer" />
+              <EditDeleteButtons
+                answerId={props.answer._id.toString()}
+                type="answer"
+              />
             )}
           </SignedIn>
         </div>

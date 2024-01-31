@@ -55,7 +55,7 @@ const userSchema = new mongoose.Schema({
     required: false,
   },
   reputation: {
-    type: String,
+    type: Number,
     default: 0,
   },
   saved: [{ type: Schema.Types.ObjectId, ref: "Question" }],

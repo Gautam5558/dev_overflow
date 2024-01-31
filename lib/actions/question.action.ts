@@ -40,7 +40,10 @@ export const createQuestion = async (params: any) => {
       $set: { tags: tagDocuments },
     });
 
-    // Whenever a user creates a question add reputation by +5(ToDo)
+    // Whenever a user creates a question add reputation by +5
+    await User.findByIdAndUpdate(author, {
+      $inc: { reputation: 5 },
+    });
 
     revalidatePath(path);
   } catch (err) {
@@ -76,6 +79,7 @@ export const getQuestions = async (params: any) => {
         query.answers = { $size: 0 };
         break;
       default:
+        sortOptions = { createdAt: -1 };
         break;
     }
 
@@ -122,6 +126,16 @@ export const handleUpvote = async (params: any) => {
       await Question.findByIdAndUpdate(questionId, {
         $pull: { upvotes: userId },
       });
+
+      // Handling reputation for this case
+      // Since I've cancelled my upvote hence i will -1 my reputation as when I upvoted it
+      // I incremented it by +1
+      await User.findByIdAndUpdate(userId, { $inc: { reputation: -1 } });
+
+      // Decrementing reputation of User whose question is upvoted by -10
+      await User.findByIdAndUpdate(question.author[0], {
+        $inc: { reputation: -10 },
+      });
     } else if (!isIncludedUpvote && isIncludedDownvote) {
       await Question.findByIdAndUpdate(questionId, {
         $push: { upvotes: userId },
@@ -129,9 +143,21 @@ export const handleUpvote = async (params: any) => {
       await Question.findByIdAndUpdate(questionId, {
         $pull: { downvotes: userId },
       });
+      // Incrementing reputation of User whose question is upvoted by 20(10+10)
+      await User.findByIdAndUpdate(question.author[0], {
+        $inc: { reputation: 20 },
+      });
     } else {
       await Question.findByIdAndUpdate(questionId, {
         $push: { upvotes: userId },
+      });
+
+      // Handling reputation for this case
+      await User.findByIdAndUpdate(userId, { $inc: { reputation: 1 } });
+
+      // Incrementing reputation of User whose question is upvoted by 10
+      await User.findByIdAndUpdate(question.author[0], {
+        $inc: { reputation: 10 },
       });
     }
     revalidatePath(path);
@@ -152,6 +178,11 @@ export const handleDownvote = async (params: any) => {
       await Question.findByIdAndUpdate(questionId, {
         $pull: { downvotes: userId },
       });
+      await User.findByIdAndUpdate(userId, { $inc: { reputation: -1 } });
+      // Incrementing reputation of User whose question is upvoted by 10
+      await User.findByIdAndUpdate(question.author[0], {
+        $inc: { reputation: 10 },
+      });
     } else if (!isIncludedDownvote && isIncludedUpvote) {
       await Question.findByIdAndUpdate(questionId, {
         $push: { downvotes: userId },
@@ -159,9 +190,18 @@ export const handleDownvote = async (params: any) => {
       await Question.findByIdAndUpdate(questionId, {
         $pull: { upvotes: userId },
       });
+      // Decrementing reputation of User whose question is upvoted by -20
+      await User.findByIdAndUpdate(question.author[0], {
+        $inc: { reputation: -20 },
+      });
     } else {
       await Question.findByIdAndUpdate(questionId, {
         $push: { downvotes: userId },
+      });
+      await User.findByIdAndUpdate(userId, { $inc: { reputation: 1 } });
+      // Decrementing reputation of User whose question is upvoted by 10
+      await User.findByIdAndUpdate(question.author[0], {
+        $inc: { reputation: -10 },
       });
     }
     revalidatePath(path);
@@ -207,6 +247,23 @@ export const deleteQuestion = async (params: any) => {
         { _id: question.tags[i] },
         { $pull: { questions: questionId } }
       );
+    }
+    // Deleting reputation of user who created question and users who upvoted and downvoted question
+    const userReputationTobeDeleted =
+      question.upvotes.length * 10 - question.downvotes.length * 10 + 5;
+    await User.findByIdAndUpdate(question.author[0], {
+      $inc: { reputation: -userReputationTobeDeleted },
+    });
+    // Now deleting upvotes and downvotes user reputation
+    for (let i = 0; i < question.upvotes.length; i++) {
+      await User.findByIdAndUpdate(question.upvotes[i], {
+        $inc: { reputation: -1 },
+      });
+    }
+    for (let i = 0; i < question.downvotes.length; i++) {
+      await User.findByIdAndUpdate(question.downvotes[i], {
+        $inc: { reputation: -1 },
+      });
     }
     await Interaction.deleteMany({ question: questionId });
     await Question.findByIdAndDelete(questionId);
