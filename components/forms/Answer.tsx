@@ -21,9 +21,11 @@ import { usePathname } from "next/navigation";
 const Answer = ({
   questionId,
   clerkId,
+  question,
 }: {
   questionId: string;
   clerkId: string | null;
+  question: object;
 }) => {
   const form = useForm<z.infer<typeof answerSchema>>({
     resolver: zodResolver(answerSchema),
@@ -33,6 +35,7 @@ const Answer = ({
   });
   const pathname = usePathname();
   const [loading, setLoading] = useState(false);
+  const [aiLoading, setAiLoading] = useState(false);
 
   const { theme }: any = useContext(ThemeContext);
 
@@ -51,13 +54,46 @@ const Answer = ({
     setLoading(false);
   }
 
+  const handleGeneratingAnswer = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    try {
+      setAiLoading(true);
+      const res = await fetch(
+        process.env.NEXT_PUBLIC_SERVER_URL + "api/chatgpt",
+        {
+          method: "POST",
+          headers: {
+            "Content-TYpe": "application/json",
+          },
+          body: JSON.stringify({ question }),
+        }
+      );
+
+      const data = await res.json();
+      setAiLoading(false);
+      console.log(data);
+      if (editorRef.current) {
+        const editor = editorRef.current as any;
+        editor.setContent(data.result);
+      }
+    } catch (err) {
+      console.log(err);
+      setAiLoading(false);
+    }
+  };
+
   return (
-    <div>
+    <div className="mt-8">
       <div className="flex items-center justify-between">
         <span className="text-dark400_light800 paragraph-semibold">
           Write your answer here
         </span>
-        <Button className="background-light800_dark300 flex items-center justify-center gap-1 rounded-[5px] px-4 py-2.5">
+        <Button
+          disabled={aiLoading}
+          className="background-light800_dark300 flex items-center justify-center gap-1 rounded-[5px] px-4 py-2.5 disabled:cursor-not-allowed"
+          onClick={(e) => handleGeneratingAnswer(e)}
+        >
           <Image
             src="/assets/icons/stars.svg"
             width={12}
@@ -65,7 +101,7 @@ const Answer = ({
             alt="starsImg"
           />
           <span className="subtle-medium primary-text-gradient">
-            Generate AI Answer
+            {aiLoading === false ? "Generate AI Answer" : "Generating"}
           </span>
         </Button>
       </div>

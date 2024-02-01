@@ -169,3 +169,49 @@ export const globalFilters = [
   { name: "User", value: "user" },
   { name: "Tag", value: "tag" },
 ];
+
+export interface BadgeCriteriaType {
+  BRONZE: number;
+  SILVER: number;
+  GOLD: number;
+}
+
+export interface BadgeCriteriaObjectType {
+  QUESTION_COUNT: BadgeCriteriaType;
+  ANSWER_COUNT: BadgeCriteriaType;
+  QUESTION_UPVOTES: BadgeCriteriaType;
+  ANSWER_UPVOTES: BadgeCriteriaType;
+  TOTAL_VIEWS: BadgeCriteriaType;
+}
+
+export const BADGE_CRITERIA: BadgeCriteriaObjectType = {
+  QUESTION_COUNT: {
+    BRONZE: 10,
+    SILVER: 50,
+    GOLD: 100,
+  },
+  ANSWER_COUNT: {
+    BRONZE: 10,
+    SILVER: 50,
+    GOLD: 100,
+  },
+  QUESTION_UPVOTES: {
+    BRONZE: 10,
+    SILVER: 50,
+    GOLD: 100,
+  },
+  ANSWER_UPVOTES: {
+    BRONZE: 10,
+    SILVER: 50,
+    GOLD: 100,
+  },
+  TOTAL_VIEWS: {
+    BRONZE: 10,
+    SILVER: 50,
+    GOLD: 100,
+  },
+};
+
+export type KeyType = keyof typeof BADGE_CRITERIA;
+
+export type CriteriaKeyType = keyof (typeof BADGE_CRITERIA)[KeyType];
