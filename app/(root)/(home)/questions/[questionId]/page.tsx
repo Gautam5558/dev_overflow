@@ -144,7 +144,11 @@ const QuestionDetail = async ({
         pageNumber={searchParams.page ? +searchParams.page : 1}
         isNext={isNext}
       />
-      <Answer questionId={questionId} clerkId={userId} />
+      <Answer
+        questionId={questionId}
+        clerkId={userId}
+        question={JSON.parse(JSON.stringify(questionData))}
+      />
     </>
   );
 };

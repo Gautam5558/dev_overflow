@@ -7,6 +7,7 @@ import { revalidatePath } from "next/cache";
 import Tag from "../models/tag.model";
 import Answer from "../models/answer.model";
 import { FilterQuery } from "mongoose";
+import { assignBadges } from "../utils";
 
 export const getUser = async (params: any) => {
   try {
@@ -214,7 +215,41 @@ export const getUserInfo = async (params: any) => {
       author: [user._id],
     });
     const totalAnswers = await Answer.countDocuments({ author: user._id });
-    return { user, totalAnswers, totalQuestions };
+
+    const [questionUpvotes] = await Question.aggregate([
+      { $match: { author: [user._id] } },
+      { $project: { _id: 0, upvotes: { $size: "$upvotes" } } },
+      { $group: { _id: null, totalUpvotes: { $sum: "$upvotes" } } },
+    ]);
+
+    const [answerUpvotes] = await Answer.aggregate([
+      { $match: { author: user._id } },
+      { $project: { _id: 0, upvotes: { $size: "$upvotes" } } },
+      { $group: { _id: null, totalUpvotes: { $sum: "$upvotes" } } },
+    ]);
+
+    const [questionViews] = await Question.aggregate([
+      { $match: { author: [user._id] } },
+      { $group: { _id: null, totalViews: { $sum: "$views" } } },
+    ]);
+
+    const criteria = [
+      { type: "QUESTION_COUNT", count: totalQuestions },
+      { type: "ANSWER_COUNT", count: totalAnswers },
+      { type: "QUESTION_UPVOTES", count: questionUpvotes?.totalUpvotes || 0 },
+      { type: "ANSWER_UPVOTES", count: answerUpvotes?.totalUpvotes || 0 },
+      { type: "TOTAL_VIEWS", count: questionViews?.totalViews },
+    ];
+    console.log(criteria);
+    const badgeCounts = assignBadges({ criteria });
+
+    return {
+      user,
+      totalAnswers,
+      totalQuestions,
+      badgeCounts,
+      reputation: user.reputation,
+    };
   } catch (err) {
     console.log(err);
   }

@@ -3,6 +3,7 @@ import * as z from "zod";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import qs from "query-string";
+import { BADGE_CRITERIA, BadgeCriteriaType, KeyType } from "@/constants";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -73,4 +74,25 @@ export const removeQueryFromUrl = (params: any) => {
     },
     { skipNull: true }
   );
+};
+
+export const assignBadges = (params: any) => {
+  const badgeCounts = {
+    GOLD: 0,
+    SILVER: 0,
+    BRONZE: 0,
+  };
+  type BadgeCountsType = keyof typeof badgeCounts;
+  const { criteria } = params;
+  criteria.forEach((item: { type: string; count: number }) => {
+    const { type, count } = item;
+    const badgeLevels: BadgeCriteriaType = BADGE_CRITERIA[type as KeyType];
+    Object.keys(badgeLevels).forEach((level: any) => {
+      if (count >= badgeLevels[level as BadgeCountsType]) {
+        badgeCounts[level as BadgeCountsType] =
+          badgeCounts[level as BadgeCountsType] + 1;
+      }
+    });
+  });
+  return badgeCounts;
 };
