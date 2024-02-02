@@ -2,7 +2,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import React, { useRef, useState } from "react";
-import { questionSchema } from "@/lib/utils";
+import { getToast, questionSchema } from "@/lib/utils";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -59,6 +59,7 @@ const Question = ({
         questionId: questionData._id,
       });
       setLoading(false);
+      getToast("Question updated successfully", "success");
       navigate.push("/");
     } else {
       setLoading(true);
@@ -70,6 +71,7 @@ const Question = ({
         path,
       });
       setLoading(false);
+      getToast("Question created successfully", "success");
       navigate.push("/");
     }
   }

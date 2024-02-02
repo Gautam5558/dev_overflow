@@ -104,7 +104,7 @@ export const handleAnswerUpvote = async (params: any) => {
       await User.findByIdAndUpdate(answer.author, { $inc: { reputation: 10 } });
     }
     revalidatePath(path);
-    return { userId };
+    return { userId, hasUpvoted: !isIncludedUpvote };
   } catch (err) {
     console.log(err);
   }
@@ -144,7 +144,7 @@ export const handleAnswerDownvote = async (params: any) => {
     }
     revalidatePath(path);
     // We actually dont need to return anything , we are just returning for the sake of it
-    return { userId };
+    return { userId, hasDownvoted: !isIncludedDownvote };
   } catch (err) {
     console.log(err);
   }

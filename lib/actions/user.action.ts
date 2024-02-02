@@ -124,6 +124,7 @@ export const savingQuestionHandle = async (params: any) => {
       await User.findByIdAndUpdate(userId, { $push: { saved: questionId } });
     }
     revalidatePath(path);
+    return { hasSaved: !isSaved };
   } catch (err) {
     console.log(err);
   }

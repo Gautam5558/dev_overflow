@@ -1,7 +1,11 @@
 import Question from "@/components/forms/Question";
 import { getUser } from "@/lib/actions/user.action";
 import { auth } from "@clerk/nextjs";
+import { Metadata } from "next";
 import React from "react";
+export const metadata: Metadata = {
+  title: "Ask Question | dev_overflow",
+};
 
 const AskQuestion = async () => {
   const { userId } = auth();

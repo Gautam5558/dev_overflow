@@ -1,6 +1,7 @@
 "use client";
 import { deleteAnswer } from "@/lib/actions/answer.action";
 import { deleteQuestion } from "@/lib/actions/question.action";
+import { getToast } from "@/lib/utils";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";
@@ -20,8 +21,10 @@ const EditDeleteButtons = ({
   const handleDelete = async () => {
     if (type === "question") {
       await deleteQuestion({ questionId, path });
+      getToast("Question deleted successfully", "success");
     } else {
       await deleteAnswer({ answerId, path });
+      getToast("Answer deleted successfully", "success");
     }
   };
 

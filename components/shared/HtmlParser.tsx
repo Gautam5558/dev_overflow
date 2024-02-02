@@ -38,7 +38,7 @@ const HtmlParser = ({ content }: Props) => {
     Prism.highlightAll();
   }, []);
   console.log(parse(content));
-  return <div>{parse(content)}</div>;
+  return <div className="markdown w-full min-w-full">{parse(content)}</div>;
 };
 
 export default HtmlParser;

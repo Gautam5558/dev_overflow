@@ -11,7 +11,7 @@ import {
 import { Button } from "../ui/button";
 import { Editor } from "@tinymce/tinymce-react";
 import { z } from "zod";
-import { answerSchema } from "@/lib/utils";
+import { answerSchema, getToast } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ThemeContext } from "@/context/ThemeProvider";
 import Image from "next/image";
@@ -49,6 +49,7 @@ const Answer = ({
       clerkId,
       path: pathname,
     });
+    getToast("Answer created successfully", "success");
     const editor = editorRef?.current as any;
     editor.setContent("");
     setLoading(false);

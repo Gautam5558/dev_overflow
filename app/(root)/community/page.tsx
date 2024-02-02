@@ -5,7 +5,12 @@ import NoResult from "@/components/shared/NoResult";
 import Pagination from "@/components/shared/Pagination";
 import { userFilters } from "@/constants";
 import { getUsers } from "@/lib/actions/user.action";
+import { Metadata } from "next";
 import React from "react";
+
+export const metadata: Metadata = {
+  title: "Community | dev_overflow",
+};
 
 const Community = async ({
   searchParams,

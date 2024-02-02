@@ -1,5 +1,5 @@
 "use client";
-import { profileSchema } from "@/lib/utils";
+import { getToast, profileSchema } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -57,6 +57,7 @@ const Profile = ({ user }: Props) => {
       userId: user._id,
       path,
     });
+    getToast("Updated user information", "success");
     setLoading(false);
     navigate.push("/");
   }

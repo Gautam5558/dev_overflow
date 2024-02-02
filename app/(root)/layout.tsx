@@ -3,6 +3,8 @@ import LeftSidebar from "@/components/shared/sidebar/LeftSidebar";
 import RightSidebar from "@/components/shared/sidebar/RightSidebar";
 import { auth } from "@clerk/nextjs";
 import React from "react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const { userId } = auth();
@@ -16,7 +18,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         </section>
         <RightSidebar />
       </div>
-      Toaster
+      <ToastContainer />
     </main>
   );
 };
