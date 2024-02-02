@@ -10,6 +10,11 @@ import ProfileLink from "@/components/shared/ProfileLink";
 import Stats from "@/components/shared/Stats";
 import TopPosts from "@/components/shared/TopPosts";
 import UserAnswers from "@/components/shared/UserAnswers";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Profile | dev_overflow",
+};
 
 const ProfileDetail = async ({
   params,

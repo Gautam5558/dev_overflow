@@ -5,7 +5,12 @@ import NoResult from "@/components/shared/NoResult";
 import Pagination from "@/components/shared/Pagination";
 import { tagFilters } from "@/constants";
 import { getAllTags } from "@/lib/actions/tag.action";
+import { Metadata } from "next";
 import React from "react";
+
+export const metadata: Metadata = {
+  title: "Tags | dev_overflow",
+};
 
 const Tags = async ({
   searchParams,

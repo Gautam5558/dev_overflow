@@ -6,6 +6,7 @@ import {
 import { questionView } from "@/lib/actions/interaction.action";
 import { handleDownvote, handleUpvote } from "@/lib/actions/question.action";
 import { savingQuestionHandle } from "@/lib/actions/user.action";
+import { getToast } from "@/lib/utils";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
@@ -35,38 +36,71 @@ const Voting = ({ questionId, userId, data, whichVoting, user }: Props) => {
   const handleClick = async (vote: string) => {
     if (vote === "u") {
       if (whichVoting === "question") {
-        const { user }: any = await handleUpvote({ userId, questionId, path });
-        console.log(user);
-      } else {
-        // Here questionId is actually answerId in this case
-        const { user }: any = await handleAnswerUpvote({
+        const { user, hasUpvoted }: any = await handleUpvote({
           userId,
           questionId,
           path,
         });
         console.log(user);
+        if (hasUpvoted) {
+          getToast("Question upvoted", "success");
+        } else {
+          getToast("Question upvote removed", "error");
+        }
+      } else {
+        // Here questionId is actually answerId in this case
+        const { user, hasUpvoted }: any = await handleAnswerUpvote({
+          userId,
+          questionId,
+          path,
+        });
+        console.log(user);
+        if (hasUpvoted) {
+          getToast("Answer upvoted", "success");
+        } else {
+          getToast("Answer upvote removed", "error");
+        }
       }
     } else {
       if (whichVoting === "question") {
-        const { user }: any = await handleDownvote({
+        const { user, hasDownvoted }: any = await handleDownvote({
           userId,
           questionId,
           path,
         });
         console.log(user);
+        if (hasDownvoted) {
+          getToast("Question downvoted", "success");
+        } else {
+          getToast("Question downvote removed", "error");
+        }
       } else {
-        const { user }: any = await handleAnswerDownvote({
+        const { user, hasDownvoted }: any = await handleAnswerDownvote({
           userId,
           questionId,
           path,
         });
         console.log(user);
+        if (hasDownvoted) {
+          getToast("Answer downvoted", "success");
+        } else {
+          getToast("Answer downvote removed", "error");
+        }
       }
     }
   };
 
   const handleSave = async () => {
-    await savingQuestionHandle({ userId, questionId, path });
+    const { hasSaved }: any = await savingQuestionHandle({
+      userId,
+      questionId,
+      path,
+    });
+    if (hasSaved) {
+      getToast("Question added to collections", "success");
+    } else {
+      getToast("Question removed from collections", "error");
+    }
   };
 
   return (

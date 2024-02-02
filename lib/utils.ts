@@ -4,6 +4,7 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import qs from "query-string";
 import { BADGE_CRITERIA, BadgeCriteriaType, KeyType } from "@/constants";
+import { toast } from "react-toastify";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -95,4 +96,19 @@ export const assignBadges = (params: any) => {
     });
   });
   return badgeCounts;
+};
+
+export const getToast = (title: string, type: any) => {
+  const toaster = toast(title, {
+    type,
+    position: "top-right",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+  });
+  return toaster;
 };

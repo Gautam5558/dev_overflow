@@ -203,3 +203,7 @@
     );
   }
 }
+
+.skeleton-color {
+  @apply bg-[rgba(24,24,27,0.1)];
+}

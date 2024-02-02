@@ -6,7 +6,12 @@ import Pagination from "@/components/shared/Pagination";
 import { filtersForCollections } from "@/constants";
 import { getSavedQuestions } from "@/lib/actions/user.action";
 import { auth } from "@clerk/nextjs";
+import { Metadata } from "next";
 import React from "react";
+
+export const metadata: Metadata = {
+  title: "Collections | dev_overflow",
+};
 
 const Collections = async ({
   searchParams,

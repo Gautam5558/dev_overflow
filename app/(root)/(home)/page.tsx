@@ -9,8 +9,13 @@ import LocalSearchBar from "@/components/shared/LocalSearchBar";
 import Filter from "@/components/shared/Filter";
 import HomeFilter from "@/components/shared/HomeFilter";
 import Pagination from "@/components/shared/Pagination";
+import { Metadata } from "next";
 
 // import { questionSchemaType } from "@/lib/models/question.model";
+
+export const metadata: Metadata = {
+  title: "Home | dev_overflow",
+};
 
 const Home = async ({
   searchParams,
