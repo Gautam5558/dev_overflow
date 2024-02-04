@@ -4,12 +4,16 @@ import Link from "next/link";
 import React from "react";
 import QuestionCard from "@/components/cards/QuestionCard";
 import NoResult from "@/components/shared/NoResult";
-import { getQuestions } from "@/lib/actions/question.action";
+import {
+  getQuestions,
+  getRecommendedQuestions,
+} from "@/lib/actions/question.action";
 import LocalSearchBar from "@/components/shared/LocalSearchBar";
 import Filter from "@/components/shared/Filter";
 import HomeFilter from "@/components/shared/HomeFilter";
 import Pagination from "@/components/shared/Pagination";
 import { Metadata } from "next";
+import { auth } from "@clerk/nextjs";
 
 // import { questionSchemaType } from "@/lib/models/question.model";
 
@@ -22,11 +26,29 @@ const Home = async ({
 }: {
   searchParams: { q: string; filter: string; page: string };
 }) => {
-  const result: any = await getQuestions({
-    search: searchParams.q,
-    filter: searchParams.filter,
-    page: searchParams.page ? +searchParams.page : 1,
-  });
+  const { userId } = auth();
+
+  let result: any;
+  if (searchParams?.filter === "recommended") {
+    if (userId) {
+      result = await getRecommendedQuestions({
+        userId,
+        search: searchParams.q,
+        page: searchParams.page ? +searchParams.page : 1,
+      });
+    } else {
+      result = {
+        questions: [],
+        isNext: false,
+      };
+    }
+  } else {
+    result = await getQuestions({
+      search: searchParams.q,
+      filter: searchParams.filter,
+      page: searchParams.page ? +searchParams.page : 1,
+    });
+  }
 
   return (
     <section>

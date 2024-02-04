@@ -49,6 +49,12 @@ const questionSchema = new mongoose.Schema({
       ref: "User",
     },
   ],
+  answers: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Answer",
+    },
+  ],
   createdAt: {
     type: Date,
     default: Date.now,

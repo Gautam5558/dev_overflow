@@ -8,7 +8,7 @@ export const questionView = async (params: any) => {
   try {
     connectDb();
     const { userId, questionId } = params;
-    await Question.findByIdAndUpdate(questionId, {
+    const question = await Question.findByIdAndUpdate(questionId, {
       $inc: { views: 1 },
     });
 
@@ -19,6 +19,7 @@ export const questionView = async (params: any) => {
         question: questionId,
         typeOfInteraction: "view",
       });
+
       if (interaction) {
         return console.log("interaction already exists");
       }
@@ -27,7 +28,11 @@ export const questionView = async (params: any) => {
         question: questionId,
         typeOfInteraction: "view",
       });
+
       await newInteraction.save();
+      await Interaction.findByIdAndUpdate(newInteraction._id, {
+        $set: { tags: question.tags },
+      });
     } else {
       return console.log(
         "View incremented but interaction not created since user isn't logged in"

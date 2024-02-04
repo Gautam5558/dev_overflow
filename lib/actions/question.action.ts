@@ -326,3 +326,62 @@ export const getTopQuestions = async (params: any) => {
     console.log(err);
   }
 };
+
+export const getRecommendedQuestions = async (params: any) => {
+  try {
+    connectDb();
+    const { userId, search, page = 1, pageSize = 10 } = params;
+    const user = await User.findOne({ clerkId: userId });
+
+    // First we have to calculate total question to skip on the basis of current page nuumber
+    const numberQuestionToSkip = (page - 1) * pageSize;
+
+    const interactions = await Interaction.find({ userId: user._id })
+      .populate({ path: "tags", model: Tag })
+      .exec();
+
+    // Extract tags from user interactions
+
+    const userTags = await interactions.reduce((tags, interaction) => {
+      if (interaction.tags) {
+        tags = tags.concat(interaction.tags);
+      }
+      return tags;
+    }, []);
+
+    // Get distict tagId's from user interactions
+
+    const distinctTagIds = [
+      // @ts-ignore
+      ...new Set(userTags.map((tag: any) => tag._id)),
+    ];
+
+    const query: FilterQuery<typeof Question> = {
+      $and: [
+        { author: { $ne: [user._id] } }, // Exclude user's own questions
+        { tags: { $in: distinctTagIds } }, // Questions with user tags
+      ],
+    };
+
+    if (search) {
+      query.$or = [
+        { title: { $regex: new RegExp(search, "i") } },
+        { content: { $regex: new RegExp(search, "i") } },
+      ];
+    }
+
+    const totalQuestions = await Question.countDocuments(query);
+
+    const recommendedQuestions = await Question.find(query)
+      .populate({ path: "tags", model: Tag })
+      .populate({ path: "author", model: User })
+      .skip(numberQuestionToSkip)
+      .limit(pageSize);
+
+    const isNext =
+      totalQuestions > numberQuestionToSkip + recommendedQuestions.length;
+    return { questions: recommendedQuestions, isNext };
+  } catch (err) {
+    console.log(err);
+  }
+};

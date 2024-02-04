@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { connectDb } from "../connectdb";
 import Answer from "../models/answer.model";
 import User from "../models/user.model";
+import Question from "../models/question.model";
 
 export const createAnswer = async (params: any) => {
   try {
@@ -21,6 +22,10 @@ export const createAnswer = async (params: any) => {
 
     // Incrementing reputation of User whose created answer  by 10
     await User.findByIdAndUpdate(user._id, { $inc: { reputation: 10 } });
+
+    await Question.findByIdAndUpdate(questionId, {
+      $push: { answers: answer._id },
+    });
 
     revalidatePath(path);
   } catch (err) {
