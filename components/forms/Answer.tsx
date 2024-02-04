@@ -27,6 +27,8 @@ const Answer = ({
   clerkId: string | null;
   question: object;
 }) => {
+  const { theme }: any = useContext(ThemeContext);
+
   const form = useForm<z.infer<typeof answerSchema>>({
     resolver: zodResolver(answerSchema),
     defaultValues: {
@@ -36,8 +38,6 @@ const Answer = ({
   const pathname = usePathname();
   const [loading, setLoading] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
-
-  const { theme }: any = useContext(ThemeContext);
 
   const editorRef = useRef();
 

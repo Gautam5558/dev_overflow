@@ -1,7 +1,7 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { getToast, questionSchema } from "@/lib/utils";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,7 @@ import { Editor } from "@tinymce/tinymce-react";
 import Image from "next/image";
 import { createQuestion, updateQuestion } from "@/lib/actions/question.action";
 import { usePathname, useRouter } from "next/navigation";
+import { ThemeContext } from "@/context/ThemeProvider";
 // import parse from "html-react-parser";
 
 const Question = ({
@@ -28,6 +29,8 @@ const Question = ({
   userId: any;
   questionData?: any;
 }) => {
+  const { theme }: any = useContext(ThemeContext);
+
   const questionDataTags = [];
   if (questionData) {
     for (let i = 0; i < questionData.tags.length; i++) {
@@ -168,6 +171,8 @@ const Question = ({
                       form.setValue("explanation", value);
                     }}
                     init={{
+                      skin: theme === "dark" ? "oxide-dark" : "oxide",
+                      content_css: theme === "dark" ? "dark" : "default",
                       height: 350,
                       menubar: false,
                       plugins: [

@@ -52,7 +52,7 @@ const LocalSearchBar = ({
         value={search}
         type="text"
         placeholder={placeholder}
-        className="dark:dark-gradient no-focus placeholder  paragraph-regular text-dark400_light700 border-0 border-none bg-light-800 shadow-none outline-none"
+        className=" no-focus placeholder paragraph-regular text-dark400_light700  border-0 border-none  bg-transparent  shadow-none outline-none"
         onChange={(e) => {
           setSearch(e.target.value);
         }}
