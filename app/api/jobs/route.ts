@@ -4,7 +4,7 @@ export const POST = async (request: Request) => {
   const options = {
     method: "GET",
     headers: {
-      "X-RapidAPI-Key": "74e146aa42mshdcc86d4e2165e21p1521d1jsn9b5c537aa133",
+      "X-RapidAPI-Key": process.env.NEXT_PUBLIC_RAPID_API_JOBS_API_KEY,
       "X-RapidAPI-Host": "jobs-api14.p.rapidapi.com",
     },
   };
