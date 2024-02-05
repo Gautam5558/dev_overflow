@@ -46,9 +46,6 @@ export const getAllTags = async (params: any) => {
 
     let sortOptions = {};
     switch (filter) {
-      case "top tags":
-        sortOptions = { questions: -1 };
-        break;
       case "oldest tags":
         sortOptions = { createdOn: 1 };
         break;
@@ -59,10 +56,21 @@ export const getAllTags = async (params: any) => {
         break;
     }
 
-    const tags = await Tag.find(query)
-      .skip(numberTagsToSkip)
-      .limit(pageSize)
-      .sort(sortOptions);
+    let tags;
+    if (filter === "top tags") {
+      tags = await Tag.aggregate([
+        { $match: query },
+        { $project: { name: 1, count: { $size: "$questions" }, questions: 1 } },
+        { $skip: numberTagsToSkip },
+        { $limit: pageSize },
+        { $sort: { count: -1 } },
+      ]);
+    } else {
+      tags = await Tag.find(query)
+        .skip(numberTagsToSkip)
+        .limit(pageSize)
+        .sort(sortOptions);
+    }
 
     const totalTags = await Tag.countDocuments();
     const isNext = totalTags > numberTagsToSkip + tags.length;

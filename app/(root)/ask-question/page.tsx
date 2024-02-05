@@ -5,6 +5,8 @@ import { Metadata } from "next";
 import React from "react";
 export const metadata: Metadata = {
   title: "Ask Question | dev_overflow",
+  description:
+    "Welcome to our Ask a Question Page – the heart of our vibrant community where curiosity meets collaboration! Whether you're facing a coding conundrum, seeking expert advice, or simply looking to expand your knowledge, our platform empowers you to pose questions, spark discussions, and tap into the collective wisdom of our diverse community of developers, technologists, and enthusiasts.",
 };
 
 const AskQuestion = async () => {

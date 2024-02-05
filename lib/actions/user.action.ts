@@ -154,7 +154,8 @@ export const getSavedQuestions = async (params: any) => {
       case "oldest":
         sortOptions = { createdAt: 1 };
         break;
-      case "most votes":
+
+      case "most voted":
         sortOptions = { upvotes: -1 };
         break;
       case "most viewed":
