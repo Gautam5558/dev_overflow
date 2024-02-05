@@ -10,6 +10,8 @@ import React from "react";
 
 export const metadata: Metadata = {
   title: "Tags | dev_overflow",
+  description:
+    "Our Tags Page serves as a comprehensive index of tags that categorize and organize discussions, questions, and resources across a myriad of domains within the tech ecosystem. ",
 };
 
 const Tags = async ({

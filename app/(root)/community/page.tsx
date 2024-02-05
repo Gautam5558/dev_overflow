@@ -10,6 +10,8 @@ import React from "react";
 
 export const metadata: Metadata = {
   title: "Community | dev_overflow",
+  description:
+    "Join a large number of like-minded individuals who share a passion for coding, problem-solving, and pushing the boundaries of technology. Our community page is a bustling hub where you can ask questions, seek advice, and engage in discussions on a wide range of topics,",
 };
 
 const Community = async ({

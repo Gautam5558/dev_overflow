@@ -11,6 +11,8 @@ import React from "react";
 
 export const metadata: Metadata = {
   title: "Collections | dev_overflow",
+  description:
+    "Think of your Saved Questions page as your digital library, where you can bookmark questions that sparked your curiosity, challenged your thinking, or offered ingenious solutions to complex problems. ",
 };
 
 const Collections = async ({

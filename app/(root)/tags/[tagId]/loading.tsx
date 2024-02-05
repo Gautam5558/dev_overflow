@@ -7,7 +7,6 @@ const Loading = () => {
       <Skeleton className="skeleton-color h-11 w-[200px]" />
       <div className="mb-12 mt-11 flex flex-wrap gap-5 ">
         <Skeleton className="skeleton-color h-14 flex-1 " />
-        npx shadcn-ui@latest add toast
       </div>
       <div className="flex flex-col gap-6">
         {new Array(10).fill(1, 0, 9).map((item, index) => {

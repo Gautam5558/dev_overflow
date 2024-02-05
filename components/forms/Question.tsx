@@ -83,7 +83,21 @@ const Question = ({
     if (e.key === "Enter" && field.name === "tags") {
       e.preventDefault();
       const inputTag = e.target as HTMLInputElement;
-      const inputValue = inputTag.value.trim();
+      let inputValue = inputTag.value.trim();
+
+      // Capitalizing 1st letter of the tag
+      const firstLetter = inputValue.charAt(0);
+
+      const firstLetterCap = firstLetter.toUpperCase();
+
+      const remainingLetters = inputValue.slice(1);
+
+      const remainingLettersLowerCase = remainingLetters.toLowerCase();
+
+      const capitalizedFirstChar = firstLetterCap + remainingLettersLowerCase;
+
+      inputValue = capitalizedFirstChar;
+
       if (inputValue !== "") {
         if (inputValue.length > 15) {
           form.setError("tags", {

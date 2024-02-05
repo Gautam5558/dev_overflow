@@ -14,6 +14,8 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Profile | dev_overflow",
+  description:
+    "It is  your personal dashboard for showcasing your expertise, connecting with the community, and tracking your journey as a member of our vibrant tech ecosystem! Your profile is a reflection of your unique contributions, interests, and achievements within our community of developers, technologists, and enthusiasts.",
 };
 
 const ProfileDetail = async ({
