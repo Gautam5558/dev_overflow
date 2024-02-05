@@ -32,7 +32,3 @@ export const POST = async (request: Request) => {
   }
   console.log(question);
 };
-
-// api key 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
-
-// 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
