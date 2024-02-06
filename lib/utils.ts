@@ -112,3 +112,26 @@ export const getToast = (title: string, type: any) => {
   });
   return toaster;
 };
+
+export function getMostFrequentIds(ids: string[]): string[] {
+  // Step 1: Create an object to count the frequency of each ID
+  const frequencyMap: { [key: string]: number } = {};
+
+  // Step 2: Iterate through the array of IDs and count the occurrences of each ID
+  ids.forEach((id) => {
+    frequencyMap[id] = (frequencyMap[id] || 0) + 1;
+  });
+
+  // Step 3: Convert the object into an array of objects with ID and frequency
+  const idFrequencyArray = Object.entries(frequencyMap).map(
+    ([id, frequency]) => ({ id, frequency })
+  );
+
+  // Step 4: Sort the array of objects based on frequency in descending order
+  idFrequencyArray.sort((a, b) => b.frequency - a.frequency);
+
+  // Step 5: Extract the IDs from the sorted array
+  const mostFrequentIds = idFrequencyArray.map((item) => item.id);
+
+  return mostFrequentIds;
+}

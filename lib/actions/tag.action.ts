@@ -5,6 +5,8 @@ import { connectDb } from "../connectdb";
 import Question from "../models/question.model";
 import Tag from "../models/tag.model";
 import User from "../models/user.model";
+import Answer from "../models/answer.model";
+import { getMostFrequentIds } from "../utils";
 
 export const getTag = async (params: any) => {
   try {
@@ -23,9 +25,44 @@ export const getTag = async (params: any) => {
 export const getUserTags = async (params: any) => {
   try {
     connectDb();
+    const { userId } = params;
+
+    const tags = [];
     // TODO is get questions which this user has interacted with either created or answersed
     // then after getting these questions, we can access their tags (Limit of tags to get shoud be 3 atmost)
-    return ["tag1", "tag2", "tag3"];
+    const userQuestions = await Question.find({ author: [userId] });
+    for (let i = 0; i < userQuestions.length; i++) {
+      for (let j = 0; j < userQuestions[i].tags.length; j++) {
+        tags.push(userQuestions[i].tags[j]);
+      }
+    }
+    const userAnswers = await Answer.find({ author: userId });
+    const questionIds = [];
+    for (let i = 0; i < userAnswers.length; i++) {
+      questionIds.push(userAnswers[i].questionId);
+    }
+    const questionsArray = [];
+    for (let i = 0; i < questionIds.length; i++) {
+      const question = await Question.findById(questionIds[i]);
+      questionsArray.push(question);
+    }
+
+    for (let i = 0; i < questionsArray.length; i++) {
+      for (let j = 0; j < questionsArray[i].tags.length; j++) {
+        tags.push(questionsArray[i].tags[j]);
+      }
+    }
+
+    const mostFrequentTagIds = getMostFrequentIds(tags);
+
+    const populatedTags = [];
+
+    for (let i = 0; i < mostFrequentTagIds.length; i++) {
+      const tag = await Tag.findById(mostFrequentTagIds[i]);
+      populatedTags.push(tag);
+    }
+
+    return { tagsRelatedToUser: populatedTags.slice(0, 3) };
   } catch (err) {
     console.log(err);
   }

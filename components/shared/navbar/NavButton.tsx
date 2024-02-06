@@ -22,27 +22,28 @@ const SideBarContent = () => {
           (pathname.includes(item.path) && item.path.length > 1) ||
           pathname === item.path;
         return (
-          <Link
-            href={item.path}
-            key={item.label}
-            className={`
+          <SheetClose asChild key={item.label}>
+            <Link
+              href={item.path}
+              className={`
               ${
                 isActive
                   ? "primary-gradient gap-3 rounded-lg text-light-900"
                   : "text-dark300_light900"
               } flex items-center justify-start gap-4 bg-transparent p-4 `}
-          >
-            <Image
-              src={item.icon}
-              width={20}
-              height={20}
-              alt={item.label}
-              className={isActive ? "" : "invert-colors"}
-            />
-            <span className={isActive ? "base-bold" : "base-medium"}>
-              {item.label}
-            </span>
-          </Link>
+            >
+              <Image
+                src={item.icon}
+                width={20}
+                height={20}
+                alt={item.label}
+                className={isActive ? "" : "invert-colors"}
+              />
+              <span className={isActive ? "base-bold" : "base-medium"}>
+                {item.label}
+              </span>
+            </Link>
+          </SheetClose>
         );
       })}
     </div>
