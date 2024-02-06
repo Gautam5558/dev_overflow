@@ -84,7 +84,7 @@ const Answer = ({
       setAiLoading(false);
       getToast("Upgrade to Pro plan to generate AI response", "error");
       setError(
-        "You are on Vercel's free plan, known as the Hobby plan, which has a default maximum timeout of 10 seconds for serverless functions, including API requests.To get AI response upgrade to Pro plan of vercel"
+        "(You are on Vercel's free plan which has a default maximum timeout of 10 seconds for serverless functions, including API requests.For AI response upgrade to Pro plan of vercel)"
       );
     }
   };
@@ -112,7 +112,7 @@ const Answer = ({
         </Button>
       </div>
       {error && (
-        <span className="subtle-medium my-3 text-red-500">{error}</span>
+        <span className="subtle-medium my-5 text-red-500">{error}</span>
       )}
       <Form {...form}>
         <form
