@@ -38,6 +38,7 @@ const Answer = ({
   const pathname = usePathname();
   const [loading, setLoading] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
+  const [error, setError] = useState<null | string>(null);
 
   const editorRef = useRef();
 
@@ -81,6 +82,10 @@ const Answer = ({
     } catch (err) {
       console.log(err);
       setAiLoading(false);
+      getToast("Upgrade to Pro plan to generate AI response", "error");
+      setError(
+        "You are on Vercel's free plan, known as the Hobby plan, which has a default maximum timeout of 10 seconds for serverless functions, including API requests.To get AI response upgrade to Pro plan of vercel"
+      );
     }
   };
 
@@ -106,6 +111,9 @@ const Answer = ({
           </span>
         </Button>
       </div>
+      {error && (
+        <span className="subtle-medium my-3 text-red-500">{error}</span>
+      )}
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
