@@ -58,7 +58,7 @@ const NavButton = () => {
           width={36}
           height={36}
           alt="menuButton"
-          className="invert-colors sm:hidden"
+          className="invert-colors min-h-9 min-w-9 sm:hidden"
         />
       </SheetTrigger>
       <SheetContent

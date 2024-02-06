@@ -33,9 +33,9 @@ const ToggleButton = () => {
     <Menubar className="relative border-none bg-transparent shadow-none">
       <MenubarMenu>
         <MenubarTrigger
-          className="cursor-pointer 
-        focus:bg-light-900
-        data-[state=open]:bg-light-900 dark:focus:bg-dark-200 dark:data-[state=open]:bg-dark-200"
+          className="min-h-5 
+        min-w-5
+        cursor-pointer focus:bg-light-900 data-[state=open]:bg-light-900 dark:focus:bg-dark-200 dark:data-[state=open]:bg-dark-200"
         >
           <Image
             src={
@@ -46,7 +46,8 @@ const ToggleButton = () => {
             width={20}
             height={20}
             alt={theme === "dark" ? "moon" : "sun"}
-            className="active-theme"
+            className="active-theme min-h-5 
+            min-w-5"
           />
         </MenubarTrigger>
         <MenubarContent

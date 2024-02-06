@@ -43,8 +43,8 @@ const QuestionCard = async (props: Props) => {
     border bg-light-900 px-11 py-9"
     >
       <div>
-        <span className="small-regular capitalize sm:hidden">
-          . {timeAgo.format(props.question.createdAt)}
+        <span className="small-regular text-dark300_light700 mb-3 capitalize sm:hidden ">
+          {timeAgo.format(props.question.createdAt)}
         </span>
         <div className="flex items-center justify-between gap-2">
           <Link href={"/questions/" + props.question._id}>
