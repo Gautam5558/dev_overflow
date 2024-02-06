@@ -14,6 +14,7 @@ export const POST = async (request: Request) => {
         body.search +
         "&location=" +
         "India",
+      // @ts-ignore
       options
     );
 
